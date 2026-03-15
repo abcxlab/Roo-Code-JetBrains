@@ -211,6 +211,8 @@ Roo-Code-JetBrains/
 - [debugmm](https://github.com/debugmm)
 - [Micro66](https://github.com/Micro66)
 - [qdaxb](https://github.com/qdaxb)
+- [daniel-lxs](https://github.com/daniel-lxs)
+- [chiangzi](https://github.com/chiangzi)
 
 ### 🚀 贡献者
 
