@@ -15,18 +15,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.23.4"
 }
 
-apply(from = "genPlatform.gradle")
-
-// Use Java/Kotlin toolchains instead of per-task source/target
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-
-kotlin {
-    jvmToolchain(17)
-}
+apply("genPlatform.gradle")
 
 // ------------------------------------------------------------
 // The 'debugMode' setting controls how plugin resources are prepared during the build process.
@@ -56,165 +45,88 @@ kotlin {
 //     Example: ./gradlew prepareSandbox -PdebugMode=idea
 //   - Defaults to "none" if not explicitly set.
 // ------------------------------------------------------------
-// Extra properties (Kotlin DSL style)
-val ext = project.extensions.extraProperties
-ext.set("debugMode", findProperty("debugMode") ?: "none")
-ext.set("debugResource", project.projectDir.resolve("../debug-resources").absolutePath)
-ext.set("vscodePlugin", findProperty("vscodePlugin") ?: "roo-code")
+ext {
+    set("debugMode", project.findProperty("debugMode") ?: "none")
+    set("debugResource", project.projectDir.resolve("../debug-resources").absolutePath)
+    set("vscodePlugin", project.findProperty("vscodePlugin") ?: "roo-code")
+}
 
-// Strongly-typed providers (avoid stringly-typed ext lookups during configuration)
-val debugModeProp = providers.gradleProperty("debugMode").orElse("none")
-val vscodePluginProp = providers.gradleProperty("vscodePlugin").orElse("roo-code")
+project.afterEvaluate {
+    tasks.findByName(":prepareSandbox")?.inputs?.properties?.put("build_mode", ext.get("debugMode"))
+}
 
 fun Sync.prepareSandbox() {
-    // Read once during configuration; values also wired as task inputs below
-    val debugMode = debugModeProp.get()
-    val vsCodePluginName = vscodePluginProp.get()
-
-    // ---- Copy logging helpers ----
-    val copyOps = mutableListOf<Pair<String, String>>() // (src, dest)
-
-    fun resolvedDestPath(rawDest: String, destinationDir: File): File {
-        return if (File(rawDest).isAbsolute) File(rawDest) else File(destinationDir, rawDest)
-    }
-
-    fun Sync.copyAndTrack(
-        src: Any,
-        dest: String,
-        createDestIfMissing: Boolean = false,
-        configure: CopySpec.() -> Unit = {}
-    ) {
-        if (createDestIfMissing) {
-            val destFile = resolvedDestPath(dest, destinationDir)
-            if (!destFile.exists()) {
-                destFile.mkdirs()
-                logger.lifecycle("[prepareSandbox] Created missing destination directory: ${destFile.absolutePath}")
-            }
-        }
-        logger.lifecycle("[prepareSandbox] Scheduling copy: $src -> $dest")
-        val destFile = resolvedDestPath(dest, destinationDir)
-        if (File(dest).isAbsolute) {
-            // Absolute dest: perform copy outside of this Sync's destinationDir
-            doLast {
-                logger.lifecycle("[prepareSandbox] Executing external copy: $src -> ${destFile.absolutePath}")
-                project.copy {
-                    from(src)
-                    into(destFile)
-                    configure.invoke(this)
-                }
-            }
-        } else {
-            // Relative dest: use this Sync's copy spec
-            from(src) {
-                into(dest)
-                configure.invoke(this)
-            }
-        }
-        copyOps.add(src.toString() to dest)
-    }
-
-    fun Sync.copyNodeModulesFiltered(srcDir: String, destDir: String, patterns: List<String>) {
-        copyAndTrack(srcDir, destDir) {
-            patterns.forEach { include(it) }
-        }
-    }
-
-    doFirst {
-        logger.lifecycle("[prepareSandbox] Starting with debugMode='${debugMode}'")
-    }
-
     // Set duplicate strategy to include files, with later sources taking precedence
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
-    val sandboxDir = intellij.pluginName.get()
+    if (ext.get("debugMode") == "idea") {
+        // Copy the *contents* of extension_host/dist into the expected 'src' directory
+        from("../extension_host/dist") { into("${ext.get("debugResource")}/runtime/src/") }
+        from("../extension_host/package.json") { into("${ext.get("debugResource")}/runtime/") }
 
-    // Themes
-    val themesDir = "${project.projectDir.absolutePath}/src/main/resources/themes/"
-    if (!File(themesDir).exists()) {
-        throw IllegalStateException("missing themes dir")
-    }
-
-    // Common
-    val vscodePluginDir = File("./plugins/${vsCodePluginName}")
-    if (!vscodePluginDir.exists()) {
-        throw IllegalStateException("missing plugin dir")
-    }
-
-    val depPatterns = mutableListOf<String>()
-    val depfile = File("prodDep.txt")
-    if (!depfile.exists()) {
-        throw IllegalStateException("missing prodDep.txt")
-    }
-    depfile.readLines().let {
-        it.forEach { line ->
-            depPatterns.add(line.substringAfterLast("node_modules/") + "/**")
+        from("${project.projectDir.absolutePath}/src/main/resources/themes/") {
+            into("${ext.get("debugResource")}/${ext.get("vscodePlugin")}/src/integrations/theme/default-themes/")
         }
-    }
-
-    if (debugMode == "idea") {
-        val debugResourceDir = layout.projectDirectory.dir("../debug-resources")
-        if (!debugResourceDir.asFile.exists()) {
-            mkdir(debugResourceDir)
+        doLast {
+            val vscodePluginDir = File("${ext.get("debugResource")}/${ext.get("vscodePlugin")}")
+            vscodePluginDir.mkdirs()
+            File(vscodePluginDir, ".env").createNewFile()
         }
-        val debugDir = debugResourceDir.asFile.absolutePath
-        copyAndTrack("${vscodePluginDir.path}/extension","${debugDir}/${vsCodePluginName}", createDestIfMissing = true)
-        if (File("${debugDir}/${vsCodePluginName}/src").exists()) {
-            copyAndTrack(themesDir, "${debugDir}/${vsCodePluginName}/src/integrations/theme/default-themes/")
-        } else {
-            copyAndTrack(themesDir, "${debugDir}/${vsCodePluginName}/integrations/theme/default-themes/")
-
-        }
-        copyAndTrack(themesDir, "${debugDir}/themes/", createDestIfMissing = true)
-        copyAndTrack("../extension_host/dist", "${debugDir}/runtime/", createDestIfMissing = true)
-        copyAndTrack("../extension_host/package.json", "${debugDir}/runtime/")
-        copyNodeModulesFiltered("../extension_host/node_modules", "${debugDir}/node_modules/", depPatterns)
     } else {
-        copyAndTrack("../extension_host/dist", "${sandboxDir}/runtime/")
-        copyAndTrack("../extension_host/package.json", "${sandboxDir}/runtime/")
-        copyNodeModulesFiltered("../extension_host/node_modules", "${sandboxDir}/node_modules/", depPatterns)
-        copyAndTrack("${vscodePluginDir.path}/extension", "${sandboxDir}/${vsCodePluginName}")
-        copyAndTrack("src/main/resources/themes/", "${sandboxDir}/${vsCodePluginName}/integrations/theme/default-themes/")
-        copyAndTrack("src/main/resources/themes/", "${sandboxDir}/themes/")
+        val vscodePluginDir = File("./plugins/${ext.get("vscodePlugin")}")
+        if (!vscodePluginDir.exists()) {
+            throw IllegalStateException("missing plugin dir")
+        }
+        val list = mutableListOf<String>()
+        val depfile = File("prodDep.txt")
+        if (!depfile.exists()) {
+            throw IllegalStateException("missing prodDep.txt")
+        }
+        depfile.readLines().let {
+            it.forEach { line ->
+                list.add(line.substringAfterLast("node_modules/") + "/**")
+            }
+        }
+
+        from("../extension_host/dist") { into("${intellij.pluginName.get()}/runtime/") }
+        from("../extension_host/package.json") { into("${intellij.pluginName.get()}/runtime/") }
+
+        // First copy extension_host node_modules
+        from("../extension_host/node_modules") {
+            into("${intellij.pluginName.get()}/node_modules/")
+            list.forEach {
+                include(it)
+            }
+        }
+
+        from("${vscodePluginDir.path}/extension") { into("${intellij.pluginName.get()}/${ext.get("vscodePlugin")}") }
+        from("src/main/resources/themes/") { into("${intellij.pluginName.get()}/${ext.get("vscodePlugin")}/integrations/theme/default-themes/") }
 
         // The platform.zip file required for release mode is associated with the code in ../base/vscode, currently using version 1.100.0. If upgrading this code later
         // Need to modify the vscodeVersion value in gradle.properties, then execute the task named genPlatform, which will generate a new platform.zip file for submission
         // To support new architectures, modify according to the logic in genPlatform.gradle script
-        if (debugMode == "release") {
+        if (ext.get("debugMode") == "release") {
             // Check if platform.zip file exists and is larger than 1MB, otherwise throw exception
             val platformZip = File("platform.zip")
             if (platformZip.exists() && platformZip.length() >= 1024 * 1024) {
                 // Extract platform.zip to the platform subdirectory under the project build directory
                 val platformDir = File("${project.buildDir}/platform")
                 platformDir.mkdirs()
-                logger.lifecycle("[prepareSandbox] Extracting platform.zip -> ${platformDir.absolutePath}")
                 copy {
                     from(zipTree(platformZip))
                     into(platformDir)
                 }
-                copyOps.add(platformZip.absolutePath to platformDir.absolutePath)
             } else {
                 throw IllegalStateException("platform.zip file does not exist or is smaller than 1MB. This file is supported through git lfs and needs to be obtained through git lfs")
             }
 
-            copyAndTrack(File(project.buildDir, "platform/platform.txt"), "${sandboxDir}/")
+            from(File(project.buildDir, "platform/platform.txt")) { into("${intellij.pluginName.get()}/") }
             // Copy platform node_modules last to ensure it takes precedence over extension_host node_modules
-            copyAndTrack(File(project.buildDir, "platform/node_modules"), "${sandboxDir}/node_modules")
+            from(File(project.buildDir, "platform/node_modules")) { into("${intellij.pluginName.get()}/node_modules") }
         }
 
         doLast {
-            File("${destinationDir}/${sandboxDir}/${vsCodePluginName}/.env").createNewFile()
-        }
-    }
-
-    doLast {
-        logger.lifecycle("[prepareSandbox] Completed with debugMode='${debugMode}'. Summary:")
-        copyOps.forEach { (src, dest) ->
-            val target = resolvedDestPath(dest, destinationDir)
-            val ok = if (target.exists()) {
-                if (target.isDirectory) target.list()?.isNotEmpty() == true else true
-            } else false
-            val status = if (ok) "SUCCESS" else "FAIL"
-            logger.lifecycle("[prepareSandbox] ${status}: ${src} -> ${target.absolutePath}")
+            File("${destinationDir}/${intellij.pluginName.get()}/${ext.get("vscodePlugin")}/.env").createNewFile()
         }
     }
 }
@@ -224,6 +136,8 @@ version = properties("pluginVersion").get()
 
 repositories {
     mavenCentral()
+    // Use local Maven repository to avoid network issues
+    mavenLocal()
 }
 
 dependencies {
@@ -238,6 +152,11 @@ dependencies {
 intellij {
     version.set(properties("platformVersion"))
     type.set(properties("platformType"))
+
+    // Disable update checks to avoid network issues
+    updateSinceUntilBuild.set(false)
+    downloadSources.set(false)
+    instrumentCode.set(false)
 
     plugins.set(
         listOf(
@@ -254,7 +173,7 @@ tasks {
     register("generateConfigProperties") {
         description = "Generate properties file containing plugin configuration"
         doLast {
-            val configDir = File("$projectDir/src/main/resources/com/sina/weibo/agent/plugin/config")
+            val configDir = File("$projectDir/src/main/resources/com/roocode/jetbrains/plugin/config")
             configDir.mkdirs()
 
             val configFile = File(configDir, "plugin.properties")
@@ -266,9 +185,8 @@ tasks {
     }
 
     prepareSandbox {
-        // Wire task inputs for build cache/key stability
-        inputs.property("build_mode", debugModeProp)
-        inputs.property("vscode_plugin", vscodePluginProp)
+        from("../extension_host/dist") { into("${intellij.pluginName.get()}/runtime/") }
+        from("../extension_host/package.json") { into("${intellij.pluginName.get()}/runtime/") }
         prepareSandbox()
     }
 
@@ -283,6 +201,11 @@ tasks {
         kotlinOptions {
             jvmTarget = "17"
         }
+    }
+
+    withType<JavaCompile> {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
 
     patchPluginXml {
@@ -300,6 +223,31 @@ tasks {
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN"))
     }
+
+    named<org.jetbrains.intellij.tasks.BuildSearchableOptionsTask>("buildSearchableOptions") {
+        enabled = false
+    }
+}
+
+// Disable Gradle network checks and updates
+configurations.all {
+    resolutionStrategy {
+        // Disable network checks for dependencies
+        cacheChangingModulesFor(0, "seconds")
+        cacheDynamicVersionsFor(0, "seconds")
+    }
+}
+
+// Configure Gradle to work offline and avoid network access
+tasks.withType<org.jetbrains.intellij.tasks.RunIdeTask> {
+    // Disable automatic plugin updates
+    autoReloadPlugins.set(false)
+}
+
+// Disable Gradle IntelliJ Plugin version checks to avoid GitHub access
+tasks.withType<org.jetbrains.intellij.tasks.InitializeIntelliJPluginTask> {
+    // Disable plugin version verification to avoid network calls
+    enabled = false
 }
 
 // Configure ktlint

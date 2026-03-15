@@ -29,7 +29,7 @@ export class ExtensionManager {
             description: packageJson.description,
             version: packageJson.version,
             publisher: packageJson.publisher,
-            main: './extension.cjs',
+            main: './extension.js',
             activationEvents: packageJson.activationEvents || ['onStartupFinished'],
             extensionLocation: URI.file(path.resolve(extensionPath)),
             targetPlatform: TargetPlatform.UNIVERSAL,

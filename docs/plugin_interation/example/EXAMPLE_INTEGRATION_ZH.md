@@ -72,17 +72,17 @@ graph TD
 
 - 无需新实现但需确认已对接：
   - `extensions/core/ExtensionManager`：项目级服务，负责注册 Provider、切换扩展、刷新按钮/菜单、更新配置与广播事件（已内置包含 Cline）。
-  - 命令注册中心 `com.sina.weibo.agent.actions`：确保已注册 `cline.*` 命令并与前端 WebView 对齐。
+  - 命令注册中心 `com.roocode.jetbrains.actions`：确保已注册 `cline.*` 命令并与前端 WebView 对齐。
   - 扩展前端文件：`codeDir` 下的 `package.json` 与主入口 `main` 可在用户目录或插件内置资源中提供，满足 `isAvailable` 检查。
 
 - Cline 相关类：
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineExtensionProvider.kt`
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineButtonProvider.kt`
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineContextMenuProvider.kt`
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineExtensionProvider.kt`
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineButtonProvider.kt`
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineContextMenuProvider.kt`
 - 全局扩展管理：
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/core/ExtensionManager.kt`（项目级管理）
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/core/ExtensionManager.kt`（项目级管理）
 - 核心（VSCode 兼容层）的扩展注册/激活（如需理解深层激活链路）：
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/core/ExtensionManager.kt`（解析 `package.json`，注册与激活）
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/core/ExtensionManager.kt`（解析 `package.json`，注册与激活）
 
 ---
 
@@ -94,7 +94,7 @@ graph TD
   - 可用性：`isAvailable(project)` 通过扩展文件路径或插件内置资源判断
   - 元数据桥接：`getConfiguration(project)` 将 `ExtensionConfiguration.getConfig(ExtensionType.CLINE)` 封装为 `ExtensionMetadata`，供核心层注册/激活使用。
 
-```1:30:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineExtensionProvider.kt
+```1:30:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineExtensionProvider.kt
 class ClineExtensionProvider : ExtensionProvider {
     
     override fun getExtensionId(): String = "cline"
@@ -124,7 +124,7 @@ class ClineExtensionProvider : ExtensionProvider {
   - 定义 Cline 的工具栏按钮集合：新建任务、MCP、历史、账号、设置
   - 每个按钮点击派发对应命令（如 `cline.plusButtonClicked`），“新建任务”点击前对 WebView 可用性做检查
 
-```59:76:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineButtonProvider.kt
+```59:76:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineButtonProvider.kt
 override fun actionPerformed(e: AnActionEvent) {
     val logger = Logger.getInstance(this::class.java)
     logger.info("🔍 Cline Plus button clicked, command: cline.plusButtonClicked")
@@ -155,7 +155,7 @@ override fun actionPerformed(e: AnActionEvent) {
 - **`ClineContextMenuProvider`**
   - 提供上下文菜单项可见性策略，当前实现暴露 Explain/Fix/Improve/AddToContext/NewTask 五类动作
 
-```44:52:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineContextMenuProvider.kt
+```44:52:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineContextMenuProvider.kt
 override fun isActionVisible(actionType: ContextMenuActionType): Boolean {
     return when (actionType) {
         ContextMenuActionType.EXPLAIN_CODE,
@@ -171,7 +171,7 @@ override fun isActionVisible(actionType: ContextMenuActionType): Boolean {
 - **项目级 `extensions/core/ExtensionManager`**
   - 负责注册所有 Provider、设置当前 Provider、切换扩展、驱动按钮/菜单的动态配置与配置持久化
 
-```116:126:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/core/ExtensionManager.kt
+```116:126:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/core/ExtensionManager.kt
 private fun registerExtensionProviders() {
     getAllExtensions().forEach { registerExtensionProvider(it) }
 }
@@ -203,7 +203,7 @@ fun registerExtensionProvider(provider: ExtensionProvider) {
   - 项目/用户空间扩展目录：`${VsixManager.getBaseDirectory()}/${config.codeDir}`
   - 插件内置资源目录：`PluginResourceUtil.getResourcePath(PLUGIN_ID, config.codeDir)`
 
-```45:75:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineExtensionProvider.kt
+```45:75:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineExtensionProvider.kt
 override fun isAvailable(project: Project): Boolean {
     // Check if roo-code extension files exist
     val extensionConfig = ExtensionConfiguration.getInstance(project)
@@ -255,7 +255,7 @@ override fun isAvailable(project: Project): Boolean {
   - 设置 → `cline.settingsButtonClicked`
 - 显示策略由 `ClineButtonConfiguration` 控制（本实现展示 Plus/Prompts/History/Settings，隐藏 MCP/Marketplace）
 
-```177:186:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineButtonProvider.kt
+```177:186:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineButtonProvider.kt
 private class ClineButtonConfiguration : ButtonConfiguration {
     override fun isButtonVisible(buttonType: ButtonType): Boolean {
         return when (buttonType) {
@@ -287,7 +287,7 @@ private class ClineButtonConfiguration : ButtonConfiguration {
 - 在“新建任务”按钮中，执行命令前会检查 `WebViewManager.getLatestWebView()` 是否存在；否则弹出友好提示，避免用户进入空白界面或执行无效命令。
  - 在“新建任务”按钮中，执行命令前会检查 `WebViewManager.getLatestWebView()` 是否存在；否则弹出友好提示，避免用户进入空白界面或执行无效命令。
  
-命令注册/分发入口位于 `com.sina.weibo.agent.actions` 包，`ClineButtonProvider` 通过 `executeCommand("cline.xxx", ...)` 触发执行。
+命令注册/分发入口位于 `com.roocode.jetbrains.actions` 包，`ClineButtonProvider` 通过 `executeCommand("cline.xxx", ...)` 触发执行。
 
 ---
 
@@ -309,7 +309,7 @@ private class ClineButtonConfiguration : ButtonConfiguration {
   - 发布扩展变更事件（`ExtensionChangeListener`）
 - 如需强制重启相关进程/UI，可使用 `switchExtensionProvider(extensionId, forceRestart=true)` 走完整切换流程。
 
-```163:171:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/core/ExtensionManager.kt
+```163:171:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/core/ExtensionManager.kt
 fun setCurrentProvider(extensionId: String, forceRestart: Boolean? = false): Boolean {
     val provider = extensionProviders[extensionId]
     if (provider != null && provider.isAvailable(project)) {
@@ -379,13 +379,13 @@ fun setCurrentProvider(extensionId: String, forceRestart: Boolean? = false): Boo
 
 如需与下层 VSCode 兼容层打通（解析/注册/激活 `package.json`）：
 
-- 使用核心层的 `com.sina.weibo.agent.core.ExtensionManager` 完成：
+- 使用核心层的 `com.roocode.jetbrains.core.ExtensionManager` 完成：
   - 解析扩展 `package.json`
   - 通过 `registerExtension(path, config)` 注册
   - 调用 `activateExtension(extensionId, rpcProtocol)` 激活
 - 该层将通过 JSON-RPC/IPC 调用宿主 `ExtHostExtensionService.activate(...)`，返回 `LazyPromise`，最终转为 `CompletableFuture<Boolean>`。
 
-```171:205:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/core/ExtensionManager.kt
+```171:205:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/core/ExtensionManager.kt
 fun activateExtension(extensionId: String, rpcProtocol: IRPCProtocol): CompletableFuture<Boolean> {
     LOG.info("Activating extension: $extensionId")
     

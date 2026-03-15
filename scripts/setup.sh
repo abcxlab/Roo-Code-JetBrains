@@ -29,14 +29,13 @@ USAGE:
     $SCRIPT_NAME [OPTIONS]
 
 DESCRIPTION:
-    DESCRIPTION:
-        This script initializes the development environment by:
-        - Validating system requirements (including Git LFS)
-        - Setting up Git LFS for large file handling
-        - Initializing git submodules
-        - Installing project dependencies
-        - Applying necessary patches
-        - Setting up build environment
+    This script initializes the development environment by:
+    - Validating system requirements
+    - Initializing git submodules
+    - Installing project dependencies
+    - Applying necessary patches
+    - Setting up build environment
+
 OPTIONS:
     -f, --force           Force reinstall of dependencies
     -s, --skip-submodules Skip git submodule initialization
@@ -55,10 +54,6 @@ EXAMPLES:
 ENVIRONMENT:
     NODE_VERSION_MIN    Minimum Node.js version (default: 16.0.0)
     SKIP_VALIDATION     Skip environment validation if set to 'true'
-
-REQUIREMENTS:
-    - Git LFS must be installed for handling large files
-    - Run 'git lfs install' manually if setup fails
 
 EXIT CODES:
     0    Success
@@ -133,12 +128,6 @@ validate_system_requirements() {
         log_debug "Found development tool: $tool"
     done
     
-    # Check for Git LFS
-    if ! command_exists "git-lfs"; then
-        die "Git LFS not found. Please install Git LFS: https://git-lfs.github.io/" 2
-    fi
-    log_debug "Found Git LFS"
-    
     # Check Git configuration
     if ! git config user.name >/dev/null 2>&1; then
         log_warn "Git user.name not configured. Run: git config --global user.name 'Your Name'"
@@ -161,55 +150,6 @@ validate_system_requirements() {
     fi
     
     log_success "System requirements validated"
-}
-
-# Initialize Git LFS
-setup_git_lfs() {
-    log_step "Setting up Git LFS..."
-    
-    cd "$PROJECT_ROOT"
-    
-    # Check if Git LFS is already initialized
-    if git lfs env >/dev/null 2>&1; then
-        log_debug "Git LFS environment already configured"
-    else
-        log_info "Initializing Git LFS..."
-        execute_cmd "git lfs install" "Git LFS installation"
-    fi
-    
-    # Check if .gitattributes exists and has LFS entries
-    if [[ -f ".gitattributes" ]]; then
-        local lfs_files
-        lfs_files=$(grep -c "filter=lfs" .gitattributes 2>/dev/null || echo "0")
-        if [[ "$lfs_files" -gt 0 ]]; then
-            log_info "Found $lfs_files LFS file pattern(s) in .gitattributes"
-            
-            # Pull LFS files
-            log_info "Pulling LFS files..."
-            execute_cmd "git lfs pull" "Git LFS pull"
-            
-            # Verify LFS files
-            log_info "Verifying LFS files..."
-            if git lfs ls-files >/dev/null 2>&1; then
-                local lfs_file_count
-                lfs_file_count=$(git lfs ls-files | wc -l | tr -d ' ')
-                if [[ "$lfs_file_count" -gt 0 ]]; then
-                    log_success "Successfully pulled $lfs_file_count LFS file(s)"
-                    git lfs ls-files | while read -r line; do
-                        log_debug "LFS file: $line"
-                    done
-                else
-                    log_warn "No LFS files found in repository"
-                fi
-            fi
-        else
-            log_info "No LFS file patterns found in .gitattributes"
-        fi
-    else
-        log_warn "No .gitattributes file found, skipping LFS file pull"
-    fi
-    
-    log_success "Git LFS setup completed"
 }
 
 # Initialize git submodules
@@ -502,7 +442,6 @@ main() {
     
     # Run setup steps
     validate_system_requirements
-    setup_git_lfs
     setup_submodules
     install_dependencies
     apply_patches

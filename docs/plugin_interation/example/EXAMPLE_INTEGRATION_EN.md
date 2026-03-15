@@ -72,17 +72,17 @@ Read this first: to integrate Cline you minimally need to implement/verify these
 
 - No new implementation needed but must be wired up:
   - `extensions/core/ExtensionManager`: project-level service to register providers, switch extensions, refresh buttons/menus, update configuration, and broadcast events (Cline is already included).
-  - Command registry `com.sina.weibo.agent.actions`: ensure `cline.*` commands are registered and aligned with the frontend WebView.
+  - Command registry `com.roocode.jetbrains.actions`: ensure `cline.*` commands are registered and aligned with the frontend WebView.
   - Extension frontend files: `package.json` and `main` under `codeDir` can be provided via user space or built-in plugin resources to satisfy `isAvailable` checks.
 
 - Cline related classes:
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineExtensionProvider.kt`
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineButtonProvider.kt`
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineContextMenuProvider.kt`
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineExtensionProvider.kt`
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineButtonProvider.kt`
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineContextMenuProvider.kt`
 - Global extension management:
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/core/ExtensionManager.kt` (project-level management)
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/core/ExtensionManager.kt` (project-level management)
 - Core (VSCode compatibility layer) extension registration/activation (for deeper activation chain understanding):
-  - `jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/core/ExtensionManager.kt` (parse `package.json`, register and activate)
+  - `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/core/ExtensionManager.kt` (parse `package.json`, register and activate)
 
 ---
 
@@ -94,7 +94,7 @@ Read this first: to integrate Cline you minimally need to implement/verify these
   - Availability: `isAvailable(project)` decides availability based on extension file paths or built-in plugin resources
   - Metadata bridge: `getConfiguration(project)` wraps `ExtensionConfiguration.getConfig(ExtensionType.CLINE)` as `ExtensionMetadata` for core registration/activation
 
-```1:30:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineExtensionProvider.kt
+```1:30:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineExtensionProvider.kt
 class ClineExtensionProvider : ExtensionProvider {
     
     override fun getExtensionId(): String = "cline"
@@ -124,7 +124,7 @@ class ClineExtensionProvider : ExtensionProvider {
   - Defines Cline’s toolbar buttons: New Task, MCP, History, Account, Settings
   - Each button click dispatches its command (e.g., `cline.plusButtonClicked`); the “New Task” button checks WebView availability before execution
 
-```59:76:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineButtonProvider.kt
+```59:76:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineButtonProvider.kt
 override fun actionPerformed(e: AnActionEvent) {
     val logger = Logger.getInstance(this::class.java)
     logger.info("🔍 Cline Plus button clicked, command: cline.plusButtonClicked")
@@ -155,7 +155,7 @@ override fun actionPerformed(e: AnActionEvent) {
 - **`ClineContextMenuProvider`**
   - Provides visibility policies for context menu items; currently exposes five categories: Explain/Fix/Improve/AddToContext/NewTask
 
-```44:52:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineContextMenuProvider.kt
+```44:52:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineContextMenuProvider.kt
 override fun isActionVisible(actionType: ContextMenuActionType): Boolean {
     return when (actionType) {
         ContextMenuActionType.EXPLAIN_CODE,
@@ -171,7 +171,7 @@ override fun isActionVisible(actionType: ContextMenuActionType): Boolean {
 - **Project-level `extensions/core/ExtensionManager`**
   - Registers all providers, sets current provider, switches extensions, drives dynamic configurations for buttons/menus, persists configuration
 
-```116:126:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/core/ExtensionManager.kt
+```116:126:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/core/ExtensionManager.kt
 private fun registerExtensionProviders() {
     getAllExtensions().forEach { registerExtensionProvider(it) }
 }
@@ -203,7 +203,7 @@ Note: When no provider is configured, the initialization flow does not automatic
   - Project/user-space extension directory: `${VsixManager.getBaseDirectory()}/${config.codeDir}`
   - Plugin built-in resource directory: `PluginResourceUtil.getResourcePath(PLUGIN_ID, config.codeDir)`
 
-```45:75:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineExtensionProvider.kt
+```45:75:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineExtensionProvider.kt
 override fun isAvailable(project: Project): Boolean {
     // Check if roo-code extension files exist
     val extensionConfig = ExtensionConfiguration.getInstance(project)
@@ -255,7 +255,7 @@ Note: The comments and return value above are inconsistent. The current implemen
   - Settings → `cline.settingsButtonClicked`
 - Display policy is controlled by `ClineButtonConfiguration` (this implementation shows Plus/Prompts/History/Settings and hides MCP/Marketplace)
 
-```177:186:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/plugin/cline/ClineButtonProvider.kt
+```177:186:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/plugin/cline/ClineButtonProvider.kt
 private class ClineButtonConfiguration : ButtonConfiguration {
     override fun isButtonVisible(buttonType: ButtonType): Boolean {
         return when (buttonType) {
@@ -286,7 +286,7 @@ Note: `getButtons(...)` returns a set that includes the MCP button, but visibili
   - `cline.settingsButtonClicked`
 - In the “New Task” button, WebView availability is checked via `WebViewManager.getLatestWebView()` before executing the command; otherwise, a friendly warning is shown to avoid blank screens or no-op actions.
 
-Command registration/dispatch entry is in the `com.sina.weibo.agent.actions` package, and `ClineButtonProvider` triggers execution via `executeCommand("cline.xxx", ...)`.
+Command registration/dispatch entry is in the `com.roocode.jetbrains.actions` package, and `ClineButtonProvider` triggers execution via `executeCommand("cline.xxx", ...)`.
 
 ---
 
@@ -308,7 +308,7 @@ Command registration/dispatch entry is in the `com.sina.weibo.agent.actions` pac
   - Publishes extension change events (`ExtensionChangeListener`)
 - If you need to forcibly restart related processes/UI, use `switchExtensionProvider(extensionId, forceRestart=true)` for a full switch procedure.
 
-```163:171:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/extensions/core/ExtensionManager.kt
+```163:171:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/extensions/core/ExtensionManager.kt
 fun setCurrentProvider(extensionId: String, forceRestart: Boolean? = false): Boolean {
     val provider = extensionProviders[extensionId]
     if (provider != null && provider.isAvailable(project)) {
@@ -378,13 +378,13 @@ fun setCurrentProvider(extensionId: String, forceRestart: Boolean? = false): Boo
 
 If you want to bridge to the lower-level VSCode compatibility layer (parse/register/activate `package.json`):
 
-- Use the core `com.sina.weibo.agent.core.ExtensionManager` to:
+- Use the core `com.roocode.jetbrains.core.ExtensionManager` to:
   - Parse extension `package.json`
   - Register via `registerExtension(path, config)`
   - Activate via `activateExtension(extensionId, rpcProtocol)`
 - This layer invokes the host `ExtHostExtensionService.activate(...)` via JSON-RPC/IPC, returns a `LazyPromise`, and ultimately converts to `CompletableFuture<Boolean>`.
 
-```171:205:jetbrains_plugin/src/main/kotlin/com/sina/weibo/agent/core/ExtensionManager.kt
+```171:205:jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/core/ExtensionManager.kt
 fun activateExtension(extensionId: String, rpcProtocol: IRPCProtocol): CompletableFuture<Boolean> {
     LOG.info("Activating extension: $extensionId")
     

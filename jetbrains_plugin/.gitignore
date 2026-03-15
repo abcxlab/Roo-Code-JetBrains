@@ -48,3 +48,5 @@ src/main/resources/com/sina/weibo/agent/plugin/config/plugin.properties
 roo-code-messages.log
 /src/main/resources/roo-code/*
 prodDep.txt
+# Local VS Code artifact cache
+cache/

@@ -4,34 +4,39 @@ SPDX-FileCopyrightText: 2025 Weibo, Inc.
 SPDX-License-Identifier: Apache-2.0
 -->
 
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<!-- Plugin Configuration File. Read more:
+https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>RunVSAgent</id>
+    <resource-bundle>messages.RooCodeBundle</resource-bundle>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin
+    versions. -->
+    <id>RooCode</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>Roo Code</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://roo.dev">Roo Code</vendor>
+    <vendor url="https://roocode.com/">RooCode Inc</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]>
+    tag.
+         Guidelines:
+    https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <h1>Roo Code - Your AI-Powered Coding Assistant for JetBrains IDEs</h1>
-        <p>Roo Code brings powerful AI coding capabilities directly into your JetBrains development environment, providing intelligent assistance for all your development needs.</p>
-        
+        <h1>RooCode - Run VSCode-based Coding Agents in JetBrains IDEs</h1>
+        <p>RooCode is an innovative cross-platform development tool that enables developers to run VSCode-based coding agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.) or other IDE platforms.</p>
+
         <h2>Core Features</h2>
         <ul>
-            <li><strong>Natural Language Code Generation</strong>: Write code using simple descriptions and let Roo Code do the rest</li>
-            <li><strong>Intelligent Context Awareness</strong>: Understands your entire codebase to provide relevant suggestions</li>
-            <li><strong>AI-Powered Assistance</strong>: Leverage advanced AI for code generation, refactoring, and improvements</li>
+            <li><strong>VSCode Agent Compatibility</strong>: Seamlessly run VSCode-based coding agents in JetBrains IDEs</li>
+            <li><strong>Cross-IDE Development</strong>: Unified agent experience across different IDE platforms</li>
+            <li><strong>AI-Powered Assistance</strong>: Leverage advanced AI coding assistants for intelligent code generation</li>
         </ul>
-        
+
         <h2>Supported IDEs</h2>
-        <p>Roo Code currently supports the following JetBrains IDE series:</p>
+        <p>RooCode currently supports the following JetBrains IDE series:</p>
         <ul>
             <li><strong>IntelliJ IDEA</strong> (Ultimate & Community)</li>
             <li><strong>WebStorm</strong> - JavaScript and TypeScript development</li>
@@ -44,38 +49,168 @@ SPDX-License-Identifier: Apache-2.0
             <li><strong>Rider</strong> - .NET development</li>
             <li><strong>Android Studio</strong> - Android development</li>
         </ul>
-        
-        <h2>Key Capabilities</h2>
+
+        <h2>Supported Agents</h2>
         <ul>
-            <li><strong>Code Generation</strong>: Generate complete functions, classes, and even entire files from descriptions</li>
-            <li><strong>Automated Refactoring</strong>: Improve code quality with AI-powered refactoring suggestions</li>
-            <li><strong>Bug Detection & Fixes</strong>: Identify and fix potential issues before they become problems</li>
-            <li><strong>Documentation Generation</strong>: Automatically generate comprehensive documentation</li>
+            <li><strong>Roo Code</strong>: Advanced AI-powered coding assistant with intelligent code generation and refactoring capabilities</li>
         </ul>
-        
+
         <h2>Requirements</h2>
         <ul>
             <li>Requires <a href="https://nodejs.org/">Node.js</a> v18+ installed</li>
             <li>Requires JetBrains IDE version 2023.1 or later for optimal compatibility</li>
         </ul>
-        
+
         <h2>Benefits</h2>
         <ul>
-            <li><strong>Increased Productivity</strong>: Write code faster with intelligent AI assistance</li>
-            <li><strong>Improved Code Quality</strong>: Get suggestions for better patterns and practices</li>
-            <li><strong>Seamless Integration</strong>: Works directly within your JetBrains IDE</li>
+            <li><strong>Increased Productivity</strong>: Access powerful AI coding assistants without leaving your preferred IDE</li>
+            <li><strong>Unified Workflow</strong>: Maintain a consistent development experience across different platforms</li>
+            <li><strong>Extensible Architecture</strong>: Support for new agents and extensions as they become available</li>
         </ul>
-        
+
    ]]></description>
-   
-   <!-- Change notes for the plugin -->
-   <change-notes><![CDATA[
-        <h3>Latest Version</h3>
+
+    <!-- Change notes for the plugin -->
+    <change-notes><![CDATA[
+        <h3>Version v3.50.5</h3>
         <ul>
-            <li>Enhanced Roo Code integration for JetBrains IDEs</li>
-            <li>Improved performance and stability</li>
-            <li>Seamless AI-powered development experience</li>
+            <li>Upgrade roo-code to v3.50.5</li>
         </ul>
+        <h3>Version v3.45.0</h3>
+        <ul>
+            <li>Upgrade roo-code to v3.45.0</li>
+        </ul>
+        <h3>Version 3.41.3</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.41.3</li>
+        </ul>
+        <h3>Version 3.39.3</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.39.3</li>
+        </ul>
+        <h3>Version 3.36.16</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.36.16</li>
+        </ul>
+        <h3>Version 3.36.14</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.36.14</li>
+        </ul>
+        <h3>Version 3.36.11</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.36.11</li>
+        </ul>
+        <h3>Version 3.36.5</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.36.5</li>
+        </ul>
+        <h3>Version 3.36.2</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.36.2</li>
+        </ul>
+        <h3>Version 3.35.4</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.34.6</li>
+            <li>Fix: fix jcef timing issue at initialization</li>
+        </ul>
+        <h3>Version 3.34.6</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.34.6</li>
+            <li>Fix: fix jcef timing issue at initialization</li>
+        </ul>
+        <h3>Version 3.34.1</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.34.1</li>
+            <li>Fix: support PyCharm and stabilize WebView UI</li>
+        </ul>
+        <h3>Version 3.33.3</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.33.3</li>
+            <li>Fix: resolve editor concurrency issues</li>
+        </ul>
+
+        <h3>Version 3.33.1</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.33.1</li>
+            <li>Fix: resolve multi-window UI freeze</li>
+        </ul>
+
+        <h3>Version 3.33.0</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.33.0</li>
+            <li>Feat: Add checkpoint feature support</li>
+            <li>Fix: theme manager initialization</li>
+        </ul>
+
+        <h3>Version 3.32.1</h3>
+        <ul>
+            <li>Upgrade roo-code to 3.32.1</li>
+            <li>Feat: support problem selector</li>
+        </ul>
+
+        <h3>Version 3.28.16</h3>
+        <ul>
+            <li>Upgrade roo-code to v3.28.16</li>
+            <li>>Feat: support keymap and i18n</li>
+        </ul>
+
+        <h3>Version 3.28.15</h3>
+        <ul>
+            <li>Upgrade roo-code to v3.28.15</li>
+            <li>>Fix: support dumb mode completely</li>
+        </ul>
+
+        <h3>Version 32.28.7</h3>
+        <ul>
+            <li>Upgrade roo-code to v32.28.7</li>
+            <li>Update toolwindow actions and icons</li>
+        </ul>
+
+        <h3>Version 32.28.2</h3>
+        <ul>
+            <li>Upgrade roo-code vsix to v32.28.7</li>
+            <li>Fix: fix ClassCastException issue when plugin reactivated</li>
+            <li>Fix: fix unacknowledgedCount issue</li>
+            <li>Fix: normalize file path separators for cross-platform compatibility</li>
+            <li>Fix: change logging level for debugging info</li>
+        </ul>
+
+        <h3>Version 32.25.17</h3>
+        <ul>
+            <li>Upgrade roo-code vsix to v32.25.17</li>
+            <li>Update build.sh and release RooCode zip instead of RunVSAgent</li>
+        </ul>
+
+        <h3>Version 32.25.11</h3>
+        <ul>
+            <li>Upgrade roo-code vsix to v32.25.11</li>
+            <li>Refactor project with roo-code branding</li>
+        </ul>
+
+        <h3>Version 0.1.7</h3>
+        <ul>
+            <li>Updated Roo Code version to 3.25.15 with latest AI coding assistant features</li>
+            <li>Added support for no proxy configuration in restricted network environments</li>
+            <li>Added support for @terminal for improved user experience</li>
+        </ul>
+
+        <h3>Version 0.1.6</h3>
+        <ul>
+            <li>Added proxy support for extension host to enable usage in restricted network environments</li>
+            <li>Fixed ConcurrentModificationException in EditorAndDocManager for improved stability</li>
+            <li>Updated Roo Code version to 3.25.10 with latest AI coding assistant features</li>
+            <li>Fixed an intermittent issue where an extra "}" character would appear at the end of the file.</li>
+        </ul>
+
+        <h3>Version 0.1.5</h3>
+        <ul>
+            <li>Added system information display while webview is loading</li>
+            <li>Fixed issue where LocalResHandler attempted to load non-local resources</li>
+            <li>Enhanced logging for webview initialization process</li>
+            <li>Updated documentation and added known issues list</li>
+            <li>Improved README with star history and updated contributor information</li>
+        </ul>
+
 
    ]]></change-notes>
 
@@ -83,63 +218,102 @@ SPDX-License-Identifier: Apache-2.0
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.plugins.terminal</depends>
-    
+    <depends optional="true">com.intellij.java</depends>
+
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <projectService serviceImplementation="com.sina.weibo.agent.plugin.WecoderPluginService"/>
-        <postStartupActivity implementation="com.sina.weibo.agent.plugin.WecoderPlugin"/>
-        <editorFactoryListener implementation="com.sina.weibo.agent.editor.EditorListener"/>
-        <toolWindow factoryClass="com.sina.weibo.agent.ui.RunVSAgentToolWindowFactory"
-                    id="RunVSAgent"
-                    secondary="true"
-                    icon="/icons/roo-logo.svg"
-                    anchor="right" />
-        <notificationGroup id="RunVSAgent"
-                           displayType="BALLOON"/>
+        <postStartupActivity implementation="com.roocode.jetbrains.plugin.WecoderPlugin" />
+        <editorFactoryListener implementation="com.roocode.jetbrains.editor.EditorListener" />
+        <toolWindow factoryClass="com.roocode.jetbrains.ui.RooToolWindowFactory"
+            id="RooCode"
+            secondary="true"
+            icon="/icons/roocode.png"
+            anchor="right" />
+        <notificationGroup id="RooCode"
+            displayType="BALLOON" />
     </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.terminal">
-        <localTerminalCustomizer implementation="com.sina.weibo.agent.terminal.WeCoderTerminalCustomizer"/>
+        <localTerminalCustomizer
+            implementation="com.roocode.jetbrains.terminal.WeCoderTerminalCustomizer" />
     </extensions>
 
     <actions>
-        <!-- Dynamic toolbar group - buttons will be populated based on current extension -->
+        <action id="RooCode.plusButtonClicked"
+            icon="AllIcons.General.Add"
+            class="com.roocode.jetbrains.actions.PlusButtonClickAction"
+            text="New Task"
+            description="New task">
+            <override-text place="GoToAction" text="New Task" />
+        </action>
+
+        <!-- <action id="RooCode.promptsButtonClicked"
+                icon="AllIcons.General.Information"
+                class="com.roocode.jetbrains.actions.PromptsButtonClickAction"
+                text="Prompt"
+                description="Prompts">
+            <override-text place="GoToAction" text="Prompts" />
+        </action> -->
+
+        <!-- <action id="RooCode.mcpButtonClicked"
+            icon="AllIcons.Webreferences.Server"
+            class="com.roocode.jetbrains.actions.MCPButtonClickAction"
+            text="MCP Server"
+            description="MCP server">
+            <override-text place="GoToAction" text="MCP Server" />
+        </action> -->
+
+        <action id="RooCode.historyButtonClicked"
+            icon="AllIcons.Vcs.History"
+            class="com.roocode.jetbrains.actions.HistoryButtonClickAction"
+            text="History"
+            description="History">
+            <override-text place="GoToAction" text="History" />
+        </action>
+
+        <action id="RooCode.marketplaceButtonClicked"
+            icon="AllIcons.Toolwindows.ToolWindowComponents"
+            class="com.roocode.jetbrains.actions.MarketplaceButtonClickAction"
+            text="MCP Marketplace"
+            description="Marketplace">
+            <override-text place="GoToAction" text="Marketplace" />
+        </action>
+
+        <action id="RooCode.settingsButtonClicked"
+            icon="AllIcons.General.Settings"
+            class="com.roocode.jetbrains.actions.SettingsButtonClickAction"
+            text="Settings"
+            description="Setting">
+            <override-text place="GoToAction" text="Setting" />
+        </action>
+
         <group id="WecoderToolbarGroup">
-            <group id="RunVSAgent.DynamicExtensionActions"
-                   class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
-                   text="Extension Actions"
-                   description="Dynamic extension-specific actions" />
-            <action id="RunVSAgent.extensionStatusChecker"
-                    icon="AllIcons.General.InspectionsOK"
-                    class="com.sina.weibo.agent.extensions.ui.actions.ExtensionStatusChecker"
-                    text="Check Extension Status"
-                    description="Check extension status and diagnose issues" />
+            <reference ref="RooCode.plusButtonClicked" />
+            <!-- <reference ref="RooCode.promptsButtonClicked" /> -->
+            <!-- <reference ref="RooCode.mcpButtonClicked" />-->
+            <reference ref="RooCode.marketplaceButtonClicked" />
+            <reference ref="RooCode.historyButtonClicked" />
+            <reference ref="RooCode.settingsButtonClicked" />
         </group>
 
-        <group id="RunVSAgent.RightClickMenu" text="Roo Code" description="Roo Code AI Assistant"  icon="/icons/roo-logo.svg" popup="true">
-            <group id="RunVSAgent.RightClick.Chat" class="com.sina.weibo.agent.extensions.ui.contextmenu.DynamicExtensionContextMenuGroup"
-                   text="Extension Actions" description="Dynamic extension-specific context menu actions"/>
-            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        <group id="RooCode.RightClickMenu" text="%group.RooCode.RightClickMenu.text"
+            description="RooCode main menu" icon="/icons/roocode.svg" popup="true">
+            <action id="RooCode.ExplainCode" class="com.roocode.jetbrains.actions.ExplainCodeAction"
+                text="%action.RooCode.ExplainCode.text"
+                description="%action.RooCode.ExplainCode.description" />
+            <action id="RooCode.FixLogic" class="com.roocode.jetbrains.actions.FixLogicAction"
+                text="%action.RooCode.FixLogic.text"
+                description="%action.RooCode.FixLogic.description" />
+            <action id="RooCode.ImproveCode" class="com.roocode.jetbrains.actions.ImproveCodeAction"
+                text="%action.RooCode.ImproveCode.text"
+                description="%action.RooCode.ImproveCode.description" />
+            <action id="RooCode.AddToContext"
+                class="com.roocode.jetbrains.actions.AddToContextAction"
+                text="%action.RooCode.AddToContext.text"
+                description="%action.RooCode.AddToContext.description" />
+            <add-to-group group-id="EditorPopupMenu" anchor="first" />
         </group>
 
-
-        <!-- Right-click menu for extension-specific actions -->
-        <group id="RunVSAgent.RightClick.ExtensionActions" text="Extension Actions" description="Extension-specific actions">
-            <group id="RunVSAgent.RightClick.DynamicExtensionActions"
-                   class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
-                   text="Extension Actions"
-                   description="Dynamic extension-specific actions" />
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </group>
-
-        <!-- Main menu integration -->
-        <group id="RunVSAgent.MainMenu" text="Roo Code" description="Roo Code AI Assistant">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-            <group id="RunVSAgent.MainMenu.DynamicExtensionActions"
-                   class="com.sina.weibo.agent.extensions.ui.actions.DynamicExtensionActionsGroup"
-                   text="Extension Actions"
-                   description="Dynamic extension-specific actions" />
-        </group>
     </actions>
 </idea-plugin>

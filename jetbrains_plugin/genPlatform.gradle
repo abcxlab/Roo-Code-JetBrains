@@ -15,6 +15,9 @@ tasks.register('genPlatform', Zip) {
 }
 def download(Project project){
 
+
+
+
     def version = project.findProperty("vscodeVersion")
     String windows_x64 = "https://update.code.visualstudio.com/${version}/win32-x64-archive/stable"
     String mac_x64 = "https://update.code.visualstudio.com/${version}/darwin/stable"
@@ -24,67 +27,84 @@ def download(Project project){
 
     def list = [] // node_module directories for multiple platforms
 
+    // Define version-specific cache directory
+    def cacheRootDir = new File(project.projectDir, "cache")
+    def vscodeCacheDir = new File(cacheRootDir, "vscode")
+    def versionCacheDir = new File(vscodeCacheDir, version)
+    versionCacheDir.mkdirs() // Ensure the cache directory for this version exists
+    println "Using cache directory: ${versionCacheDir.absolutePath}"
+
     def projectBuild = new File(project.buildDir,"genPlatform")
     projectBuild.mkdirs();
-    println "Downloading Windows platform files"
-    def windowsZipFile = new File(projectBuild,"windows-x64.zip")
+    println "Processing Windows platform files"
+    def windowsZipFile = new File(versionCacheDir,"windows-x64.zip")
     if (!windowsZipFile.exists()) {
+        println "Downloading ${windowsZipFile.name} to cache..."
         windowsZipFile << new URL(windows_x64).openStream()
+        println "Downloaded ${windowsZipFile.name} to cache."
     } else {
-        println "Windows platform file already exists, skipping download"
+        println "Using cached ${windowsZipFile.name}"
     }
 
     def windowsDir = new File(projectBuild, "windows-x64")
     copy {
-        from(zipTree(new File(projectBuild, "windows-x64.zip")))
+        from(zipTree(new File(versionCacheDir, "windows-x64.zip")))
         into(windowsDir)
     }
     new File(windowsDir, "resources/app/node_modules").renameTo( new File(windowsDir, "resources/app/windows-x64"))
     list << new File(windowsDir, "resources/app/windows-x64")
 
-    println "Downloading Mac x64 platform files"
-    def macX64ZipFile = new File(projectBuild,"darwin-x64.zip")
+    println "Processing Mac x64 platform files"
+    def macX64ZipFile = new File(versionCacheDir,"darwin-x64.zip")
     if (!macX64ZipFile.exists()) {
+        println "Downloading ${macX64ZipFile.name} to cache..."
         macX64ZipFile << new URL(mac_x64).openStream()
+        println "Downloaded ${macX64ZipFile.name} to cache."
     } else {
-        println "Mac x64 platform file already exists, skipping download"
+        println "Using cached ${macX64ZipFile.name}"
     }
 
     def macX64Dir = new File(projectBuild, "darwin-x64")
-    copy {
-        from(zipTree(new File(projectBuild, "darwin-x64.zip")))
-        into(macX64Dir)
+    project.delete(macX64Dir)
+    macX64Dir.mkdirs()
+    project.exec {
+        commandLine 'unzip', '-o', '-q', new File(versionCacheDir, "darwin-x64.zip").absolutePath, '-d', macX64Dir.absolutePath
     }
     new File(macX64Dir, "Visual Studio Code.app/Contents/Resources/app/node_modules").renameTo(new File(macX64Dir, "Visual Studio Code.app/Contents/Resources/app/darwin-x64"))
     list << new File(macX64Dir, "Visual Studio Code.app/Contents/Resources/app/darwin-x64")
 
-    println "Downloading Mac arm64 platform files"
-    def macArm64ZipFile = new File(projectBuild,"darwin-arm64.zip")
+    println "Processing Mac arm64 platform files"
+    def macArm64ZipFile = new File(versionCacheDir,"darwin-arm64.zip")
     if (!macArm64ZipFile.exists()) {
+        println "Downloading ${macArm64ZipFile.name} to cache..."
         macArm64ZipFile << new URL(mac_arm64).openStream()
+        println "Downloaded ${macArm64ZipFile.name} to cache."
     } else {
-        println "Mac arm64 platform file already exists, skipping download"
+        println "Using cached ${macArm64ZipFile.name}"
     }
 
     def macArm64Dir = new File(projectBuild, "darwin-arm64")
-    copy {
-        from(zipTree(new File(projectBuild, "darwin-arm64.zip")))
-        into(macArm64Dir)
+    project.delete(macArm64Dir)
+    macArm64Dir.mkdirs()
+    project.exec {
+        commandLine 'unzip', '-o', '-q', new File(versionCacheDir, "darwin-arm64.zip").absolutePath, '-d', macArm64Dir.absolutePath
     }
     new File(macArm64Dir, "Visual Studio Code.app/Contents/Resources/app/node_modules").renameTo(new File(macArm64Dir, "Visual Studio Code.app/Contents/Resources/app/darwin-arm64"))
     list << new File(macArm64Dir, "Visual Studio Code.app/Contents/Resources/app/darwin-arm64")
 
-    println "Downloading Linux x64 platform files"
-    def linuxZipFile = new File(projectBuild,"linux-x64.zip")
+    println "Processing Linux x64 platform files"
+    def linuxZipFile = new File(versionCacheDir,"linux-x64.zip")
     if (!linuxZipFile.exists()) {
+        println "Downloading ${linuxZipFile.name} to cache..."
         linuxZipFile << new URL(linux_x64).openStream()
+        println "Downloaded ${linuxZipFile.name} to cache."
     } else {
-        println "Linux x64 platform file already exists, skipping download"
+        println "Using cached ${linuxZipFile.name}"
     }
 
     def linuxDir = new File(projectBuild, "linux-x64")
     copy {
-        from(tarTree(resources.gzip(projectBuild.toPath().resolve("linux-x64.zip"))))
+        from(tarTree(resources.gzip(versionCacheDir.toPath().resolve("linux-x64.zip"))))
         into(linuxDir)
     }
     new File(linuxDir, "VSCode-linux-x64/resources/app/node_modules").renameTo(new File(linuxDir, "VSCode-linux-x64/resources/app/linux-x64"))
@@ -116,7 +136,7 @@ def mergeDirectories(List<File> dirs, File targetDir, File outputFile = null) {
                     def relativePath = dir.toPath().relativize(file.toPath()).toString()
                     allFiles << [dir: dir, file: file, relativePath: relativePath]
                 }
-                
+
             }
         }
     }
