@@ -6,13 +6,13 @@
 
 | ID | Feature Name | Status | Owner | Domain |
 | :--- | :--- | :--- | :--- | :--- |
-| fr001 | 对接 Worktree 打开与切换功能 | In Progress | @Qiang | Bridge |
+| fr001 | 对接 Worktree 打开与切换功能 | Archived | @Qiang | Bridge |
 
 ## 2. Domain Index (领域分片索引)
 
 | Domain | Description | Path |
 | :--- | :--- | :--- |
-| **Bridge** | VSCode API 桥接与模拟层 | `specs/domain/bridge/` |
+| **Bridge** | VSCode API 桥接与模拟层 | `specs/domain/bridge.md` |
 
 ## 3. Global Business Rules (全局业务规则)
 

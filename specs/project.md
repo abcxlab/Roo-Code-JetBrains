@@ -53,3 +53,6 @@
 3. **冲突决策**：若探测到实际代码与本文档规范冲突，优先以本文档为准，并提醒用户修复代码或更新规范。
 
 </details>
+
+### [APPEND:2026-03-17] [[fr001]] Delta
+- **[Command Bridge]**: 所有 `vscode.*` 命名空间的核心命令应通过 `MainThreadCommands` 进行标准化映射。 (Ref: fr001)

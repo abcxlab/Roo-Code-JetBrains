@@ -9,6 +9,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.roocode.jetbrains.commands.CommandRegistry
 import com.roocode.jetbrains.commands.ICommand
+import com.roocode.jetbrains.project.registerProjectAPICommands
 import com.roocode.jetbrains.editor.registerOpenEditorAPICommands
 import com.roocode.jetbrains.terminal.registerTerminalAPICommands
 import com.roocode.jetbrains.util.doInvokeMethod
@@ -66,9 +67,10 @@ class MainThreadCommands(val project: Project) : MainThreadCommandsShape {
      * Initializes the command registry with default commands.
      */
     init {
-        registerOpenEditorAPICommands(project,registry);
-        registerTerminalAPICommands(project,registry);
-        //TODO other commands
+        registerOpenEditorAPICommands(project, registry)
+        registerTerminalAPICommands(project, registry)
+        registerProjectAPICommands(project, registry)
+        // TODO other commands
     }
     /**
      * Registers a command with the given identifier.
