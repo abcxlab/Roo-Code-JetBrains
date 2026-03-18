@@ -284,13 +284,13 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
             <override-text place="GoToAction" text="Marketplace" />
         </action>
 
-        <!-- <action id="RooCode.cloudButtonClicked"
+        <action id="RooCode.cloudButtonClicked"
             icon="AllIcons.General.User"
             class="com.roocode.jetbrains.actions.CloudButtonClickAction"
             text="Roo Cloud"
             description="Roo Cloud settings and task synchronization">
             <override-text place="GoToAction" text="Roo Cloud" />
-        </action> -->
+        </action>
 
         <action id="RooCode.settingsButtonClicked"
             icon="AllIcons.General.Settings"
