@@ -304,7 +304,7 @@ class ServiceProxyRegistry private constructor() {
         val ExtHostEditorTabs = createProxyIdentifier<ExtHostEditorTabsProxy>("com.roocode.jetbrains.ipc.proxy.interfaces.ExtHostEditorTabsProxy")
         val ExtHostProgress = createProxyIdentifier<Any>("ExtHostProgress")
         val ExtHostComments = createProxyIdentifier<Any>("ExtHostComments")
-        val ExtHostSecretState = createProxyIdentifier<Any>("ExtHostSecretState")
+        val ExtHostSecretState = createProxyIdentifier<ExtHostSecretStateProxy>("com.roocode.jetbrains.ipc.proxy.interfaces.ExtHostSecretStateProxy")
         val ExtHostStorage = createProxyIdentifier<Any>("ExtHostStorage")
         val ExtHostUrls = createProxyIdentifier<ExtHostUrlsProxy>("com.roocode.jetbrains.ipc.proxy.interfaces.ExtHostUrlsProxy")
         val ExtHostUriOpeners = createProxyIdentifier<Any>("ExtHostUriOpeners")

@@ -12,6 +12,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import com.roocode.jetbrains.ipc.proxy.interfaces.ExtHostSecretStateProxy
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -49,7 +50,7 @@ interface MainThreadSecretStateShape : Disposable {
  * Implementation of the secret state management service.
  * Stores secrets in ~/.roo-cline/secrets.json file.
  */
-class MainThreadSecretState : MainThreadSecretStateShape {
+class MainThreadSecretState(private val rpcProtocol: com.roocode.jetbrains.ipc.proxy.IRPCProtocol? = null) : MainThreadSecretStateShape {
     private val logger = Logger.getInstance(MainThreadSecretState::class.java)
     private val gson = GsonBuilder().setPrettyPrinting().create()
     private val mutex = Mutex()
@@ -58,6 +59,18 @@ class MainThreadSecretState : MainThreadSecretStateShape {
     private val secretsDir = File(System.getProperty("user.home"), ".roo-cline")
     private val secretsFile = File(secretsDir, "secrets.json")
     
+    private fun notifyDidChange(extensionId: String, key: String) {
+        rpcProtocol?.let { protocol ->
+            try {
+                val proxy = protocol.getProxy(com.roocode.jetbrains.core.ServiceProxyRegistry.ExtHostContext.ExtHostSecretState) as ExtHostSecretStateProxy
+                proxy.onDidChangePassword(mapOf("extensionId" to extensionId, "key" to key))
+                logger.debug("Sent onDidChangePassword to ExtHost: extensionId=$extensionId, key=$key")
+            } catch (e: Exception) {
+                logger.warn("Failed to notify ExtHost of secret change", e)
+            }
+        }
+    }
+
     init {
         // Ensure the directory exists
         if (!secretsDir.exists()) {
@@ -106,6 +119,7 @@ class MainThreadSecretState : MainThreadSecretStateShape {
             secretsFile.writeText(jsonString)
             
             logger.debug("Successfully set secret: extensionId=$extensionId, key=$key")
+            notifyDidChange(extensionId, key)
         } catch (e: Exception) {
             logger.error("Failed to set secret: extensionId=$extensionId, key=$key", e)
             throw e
@@ -137,6 +151,7 @@ class MainThreadSecretState : MainThreadSecretStateShape {
             secretsFile.writeText(jsonString)
             
             logger.debug("Successfully deleted secret: extensionId=$extensionId, key=$key")
+            notifyDidChange(extensionId, key)
         } catch (e: Exception) {
             logger.error("Failed to delete secret: extensionId=$extensionId, key=$key", e)
             throw e

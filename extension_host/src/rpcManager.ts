@@ -915,6 +915,14 @@ export class RPCManager {
             }
         });
 
+        // ExtHostSecretState
+        this.rpcProtocol.set(ExtHostContext.ExtHostSecretState, {
+            $onDidChangePassword: async (e: { extensionId: string; key: string }): Promise<void> => {
+                console.log('[RPC] ExtHostSecretState: onDidChangePassword', e);
+                // This will be picked up by the simulated VSCode API in the extension host
+            }
+        });
+
         // MainThreadWebviews
         this.rpcProtocol.set(MainContext.MainThreadWebviews, webViewManager);
     }

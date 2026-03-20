@@ -14,6 +14,9 @@ import com.roocode.jetbrains.events.WebviewHtmlUpdateData
 import com.roocode.jetbrains.events.WebviewHtmlUpdateEvent
 import com.roocode.jetbrains.webview.WebViewManager
 import java.util.concurrent.ConcurrentHashMap
+import com.google.gson.JsonParser
+import com.google.gson.JsonObject
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Webview handle type
@@ -58,6 +61,7 @@ interface MainThreadWebviewsShape : Disposable {
  */
 class MainThreadWebviews(val project: Project) : MainThreadWebviewsShape {
     private val logger = Logger.getInstance(MainThreadWebviews::class.java)
+    private val globalSeq = AtomicInteger(1000)
 
     // Store registered Webviews
     private val webviews = ConcurrentHashMap<WebviewHandle, Any?>()
@@ -99,10 +103,29 @@ class MainThreadWebviews(val project: Project) : MainThreadWebviewsShape {
         }
 
         return try {
+            var finalValue = value
+            try {
+                val jsonElement = JsonParser.parseString(value)
+                if (jsonElement.isJsonObject) {
+                    val jsonObject = jsonElement.asJsonObject
+                    if (jsonObject.has("type") && jsonObject.get("type").asString == "state") {
+                        val state = jsonObject.getAsJsonObject("state")
+                        if (state != null) {
+                            val newSeq = globalSeq.incrementAndGet()
+                            state.addProperty("clineMessagesSeq", newSeq)
+                            finalValue = jsonObject.toString()
+                            logger.debug("Injected sequence number into state message: seq=$newSeq")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Not a JSON or other parsing error, ignore and use original value
+            }
+
             val mangler = project.getService(WebViewManager::class.java)
 
 //            mangler.getWebView(handle)?.postMessageToWebView(value)
-            mangler.getLatestWebView()?.postMessageToWebView(value)
+            mangler.getLatestWebView()?.postMessageToWebView(finalValue)
             true
         } catch (e: Exception) {
             logger.error("Failed to send message to Webview: $e")

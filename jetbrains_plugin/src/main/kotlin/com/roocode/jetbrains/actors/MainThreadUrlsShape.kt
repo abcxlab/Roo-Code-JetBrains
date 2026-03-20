@@ -52,7 +52,7 @@ class MainThreadUrls : MainThreadUrlsShape {
         val id = extensionId["value"]
         if (id != null) {
             handlers[id] = handle
-            logger.info("Registered URI handler for extension: $id, handle: $handle")
+            logger.debug("Registered URI handler for extension: $id, handle: $handle")
         }
         return CompletableDeferred<Unit>().also { it.complete(Unit) }.await()
     }
@@ -71,7 +71,7 @@ class MainThreadUrls : MainThreadUrlsShape {
 
     override suspend fun createAppUri(uri: Map<String, Any?>): Map<String, Any?> {
         // DEBUG: RooCode Cloud Integration
-        logger.info("Creating application URI: uri=$uri")
+        logger.debug("Creating application URI: uri=$uri")
         val originalAuthority = uri["authority"] as? String ?: ""
         val path = uri["path"] as? String ?: ""
         val query = uri["query"] as? String?
@@ -88,7 +88,7 @@ class MainThreadUrls : MainThreadUrlsShape {
         fragment?.let { externalUri["fragment"] = it }
 
         // DEBUG: RooCode Cloud Integration
-        logger.info("Created external URI: $externalUri (original authority: $originalAuthority)")
+        logger.debug("Created external URI: $externalUri (original authority: $originalAuthority)")
         return externalUri
     }
     

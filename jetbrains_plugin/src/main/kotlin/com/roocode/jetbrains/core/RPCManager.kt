@@ -221,7 +221,7 @@ class RPCManager(
         rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadFileSystemEventService, MainThreadFileSystemEventService())
 
         // MainThreadSecretState
-        rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadSecretState, MainThreadSecretState())
+        rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadSecretState, MainThreadSecretState(rpcProtocol))
 
         // MainThreadDiagnostics
         rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadDiagnostics, MainThreadDiagnostics(project))
