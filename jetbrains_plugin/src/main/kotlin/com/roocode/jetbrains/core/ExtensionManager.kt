@@ -43,19 +43,20 @@ class ExtensionManager : Disposable {
         val packageJson = gson.fromJson(packageJsonContent, PackageJson::class.java)
 
         // Create extension identifier
-        val name = "RunVSAgent."+packageJson.name
-        val publisher = "WeCode-AI"
-        val extensionIdentifier = ExtensionIdentifier("$publisher.$name")
+        // Fixed to WeCode-AI.RunVSAgent.roo-cline to maintain compatibility with existing configuration
+        val publisherName = "WeCode-AI"
+        val extensionName = "RunVSAgent.roo-cline"
+        val extensionIdentifier = ExtensionIdentifier("$publisherName.$extensionName")
 
         // Create extension description
         return ExtensionDescription(
-            id = "${publisher}.${name}",
+            id = extensionIdentifier.value,
             identifier = extensionIdentifier,
-            name = "${publisher}.${name}",
+            name = extensionName,
             displayName = "RooCode:"+packageJson.displayName,
             description = "RooCode:"+packageJson.description,
             version = packageJson.version ?: "1.0.0",
-            publisher = "WeCode-AI",
+            publisher = publisherName,
             main = packageJson.main ?: "./dist/extension.js",
             activationEvents = packageJson.activationEvents ?: listOf("onStartupFinished"),
             extensionLocation = URI.file(extensionPath),
@@ -96,8 +97,9 @@ class ExtensionManager : Disposable {
      */
     fun registerExtension(extensionPath: String): ExtensionDescription {
         val extensionDescription = parseExtensionDescription(extensionPath)
-        extensions[extensionDescription.name] = extensionDescription
-        logger.info("Extension registered: ${extensionDescription.name}")
+        // Use full identifier value as key for lookup during activation
+        extensions[extensionDescription.identifier.value] = extensionDescription
+        logger.info("Extension registered: ${extensionDescription.identifier.value}")
         return extensionDescription
     }
 

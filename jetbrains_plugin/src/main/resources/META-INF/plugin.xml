@@ -236,6 +236,7 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
             anchor="right" />
         <notificationGroup id="RooCode"
             displayType="BALLOON" />
+        <jbProtocolCommand implementation="com.roocode.jetbrains.protocol.RooCodeProtocolHandler" />
     </extensions>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.terminal">
@@ -305,8 +306,8 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
             <!-- <reference ref="RooCode.promptsButtonClicked" /> -->
             <!-- <reference ref="RooCode.mcpButtonClicked" />-->
             <reference ref="RooCode.marketplaceButtonClicked" />
-            <reference ref="RooCode.cloudButtonClicked" />
             <reference ref="RooCode.historyButtonClicked" />
+            <reference ref="RooCode.cloudButtonClicked" />
             <reference ref="RooCode.settingsButtonClicked" />
         </group>
 

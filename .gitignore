@@ -60,6 +60,7 @@ deps/vsix/plugin/*
 .roo-build/
 dist-with-roo/
 .vscode/settings.json
+plugin.properties
 
 .roo
 .opencode/
@@ -72,3 +73,4 @@ specs/fr*
 specs/bug*
 specs/research/
 # [SKILL_END: fr-sdd]
+

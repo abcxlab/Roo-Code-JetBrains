@@ -278,7 +278,7 @@ class ExtensionHostManager : Disposable {
                 "appName" to getCurrentIDEName(),
                 "appHost" to "node",
                 "appLanguage" to "en",
-                "appUriScheme" to "vscode",
+                "appUriScheme" to getIdeProtocolScheme(),
                 "appRoot" to uriFromPath(pluginDir),
                 "globalStorageHome" to uriFromPath(Paths.get(System.getProperty("user.home"),".roo-cline", "globalStorage").toString()),
                 "workspaceStorageHome" to uriFromPath(Paths.get(System.getProperty("user.home"),".roo-cline", "workspaceStorage").toString()),
@@ -356,6 +356,35 @@ class ExtensionHostManager : Disposable {
         }
         logger.info("Get IDE name, productCode: $productCode ideName: $ideName fullName: $fullName")
         return ideName
+    }
+
+    companion object {
+        /**
+         * Dynamically determines the protocol scheme based on the current IDE.
+         * This ensures that callbacks (like OAuth) are routed back to the specific IDE instance,
+         * bypassing JetBrains Toolbox which intercepts the generic "jetbrains://" scheme.
+         */
+        fun getIdeProtocolScheme(): String {
+            val productCode = ApplicationInfo.getInstance().build.productCode
+            return when (productCode) {
+                "IU", "IC", "IE" -> "idea"
+                "WS" -> "webstorm"
+                "PY", "PC" -> "pycharm"
+                "GO" -> "goland"
+                "RD" -> "rider"
+                "CL" -> "clion"
+                "PS" -> "phpstorm"
+                "RM" -> "rubymine"
+                "AI" -> "studio" // Android Studio
+                "DB" -> "datagrip"
+                "RR" -> "rustrover"
+                "QA" -> "aqua"
+                else -> "idea" // Fallback to idea
+            }.also { scheme ->
+                // DEBUG: RooCode Cloud Integration
+                Logger.getInstance(ExtensionHostManager::class.java).info("Detected IDE protocol scheme: $scheme")
+            }
+        }
     }
 
     /**
