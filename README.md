@@ -13,7 +13,7 @@ English | [简体中文](README_zh.md)
 Roo Code for JetBrains (CE) allows you to run the full [Roo Code](https://roocode.com) AI assistant within the JetBrains ecosystem. It solves the problem of Roo Code lacking an official, stable plugin for JetBrains IDEs by providing a deeply optimized environment to run the VSCode-based agent.
 
 ### 💡 Why this version?
-While an official branding fork exists, it inherits many unresolved issues from the original RunVSAgent project, making it difficult to use in daily production. This community edition (**ABCXLAB**) is dedicated to fixing those gaps:
+While an official branding fork exists, it inherits many unresolved issues from the original RunVSAgent project, making it difficult to use in daily production. This community edition (**Roo Code (CE)**) is dedicated to fixing those gaps:
 
 *   **Truly Usable**: Fixed critical JCEF timing bugs, editor concurrency deadlocks, and UI freezes that often plague the official version.
 *   **Feature Parity**: Integrated support for Checkpoints, Problem Selectors, and full Keymap/i18n—ensuring the JetBrains experience matches the VSCode original.
