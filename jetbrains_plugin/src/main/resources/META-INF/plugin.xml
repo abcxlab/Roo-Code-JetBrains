@@ -10,11 +10,11 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
     <resource-bundle>messages.RooCodeBundle</resource-bundle>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin
     versions. -->
-    <id>RooCode</id>
+    <id>roo-code-ce</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>Roo Code for JetBrains (CE)</name>
+    <name>Roo Code (CE)</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor url="https://abcxlab.com/">ABCXLAB</vendor>
@@ -25,44 +25,40 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
          Guidelines:
     https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <h1>Roo Code for JetBrains (CE) - Run VSCode-based Coding Agents in JetBrains IDEs</h1>
-        <p>Roo Code for JetBrains (CE) is an innovative cross-platform development tool that enables developers to run Roo Code agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.) or other IDE platforms.</p>
+        <h1>Roo Code (CE) - Production-Ready AI Coding Assistant</h1>
+        <p>Roo Code (CE) is a high-performance, community-driven edition of the Roo Code AI assistant for IntelliJ-based IDEs. It provides a stable and feature-rich environment to run VSCode-based coding agents like Roo Code and Cline directly within your favorite development environment.</p>
 
-        <h2>Core Features</h2>
+        <p><img src="https://raw.githubusercontent.com/abcxlab/Roo-Code-JetBrains-CE/main/docs/screenshot.jpg" alt="Roo Code (CE) Screenshot" width="800"/></p>
+
+        <h2>🚀 Why Roo Code (CE)?</h2>
+        <p>While other versions may suffer from instability, this Community Edition is dedicated to providing a professional-grade experience:</p>
         <ul>
-            <li><strong>VSCode Agent Compatibility</strong>: Seamlessly run VSCode-based coding agents in JetBrains IDEs</li>
-            <li><strong>Cross-IDE Development</strong>: Unified agent experience across different IDE platforms</li>
-            <li><strong>AI-Powered Assistance</strong>: Leverage advanced AI coding assistants for intelligent code generation</li>
+            <li><strong>Truly Usable</strong>: Fixed critical JCEF timing bugs, editor concurrency deadlocks, memory leaks, and multi-window UI freezes.</li>
+            <li><strong>Feature Parity</strong>: Full support for Checkpoints, Problem Selectors, Worktrees, and MCP—ensuring the JetBrains experience matches the VSCode original.</li>
+            <li><strong>Production Ready</strong>: Deeply optimized for professional use, including first-class support for PyCharm and multi-window workflows.</li>
         </ul>
 
-        <h2>Supported IDEs</h2>
-        <p>Roo Code currently supports the following JetBrains IDE series:</p>
+        <h2>🛠️ Core Features</h2>
+        <ul>
+            <li><strong>VSCode Agent Compatibility</strong>: Seamlessly run VSCode-based coding agents (Roo Code, Cline, etc.)</li>
+            <li><strong>Deep IDE Integration</strong>: Native tool windows, editor context actions, and integrated terminal support.</li>
+            <li><strong>AI-Powered Assistance</strong>: Leverage advanced AI models for autonomous coding, refactoring, and debugging.</li>
+        </ul>
+
+        <h2>💻 Supported IDEs</h2>
         <ul>
             <li><strong>IntelliJ IDEA</strong> (Ultimate & Community)</li>
-            <li><strong>WebStorm</strong> - JavaScript and TypeScript development</li>
-            <li><strong>PyCharm</strong> (Professional & Community) - Python development</li>
-            <li><strong>PhpStorm</strong> - PHP development</li>
-            <li><strong>RubyMine</strong> - Ruby development</li>
-            <li><strong>CLion</strong> - C/C++ development</li>
-            <li><strong>GoLand</strong> - Go development</li>
-            <li><strong>DataGrip</strong> - Database development</li>
-            <li><strong>Rider</strong> - .NET development</li>
-            <li><strong>Android Studio</strong> - Android development</li>
+            <li><strong>PyCharm</strong> (Professional & Community)</li>
+            <li><strong>WebStorm, PhpStorm, RubyMine, CLion, GoLand, DataGrip, Rider, Android Studio</strong></li>
         </ul>
 
-        <h2>Requirements</h2>
+        <h2>📌 Requirements</h2>
         <ul>
-            <li>Requires <a href="https://nodejs.org/">Node.js</a> v18+ installed</li>
-            <li>Requires JetBrains IDE version 2023.1 or later for optimal compatibility</li>
+            <li>Requires <a href="https://nodejs.org/">Node.js</a> v18+ installed on your system</li>
+            <li>Requires IDE version 2023.1 or later for optimal compatibility</li>
         </ul>
 
-        <h2>Benefits</h2>
-        <ul>
-            <li><strong>Increased Productivity</strong>: Access powerful AI coding assistants without leaving your preferred IDE</li>
-            <li><strong>Unified Workflow</strong>: Maintain a consistent development experience across different platforms</li>
-            <li><strong>Extensible Architecture</strong>: Support for new agents and extensions as they become available</li>
-        </ul>
-
+        <p><br/><i>Note: Roo Code (CE) is an independent community project and is not affiliated with, endorsed by, or sponsored by JetBrains or RooCode, Inc.</i></p>
    ]]></description>
 
     <!-- Change notes for the plugin -->
@@ -113,7 +109,7 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
         </ul>
         <h3>Version 3.35.4</h3>
         <ul>
-            <li>Upgrade roo-code to 3.34.6</li>
+            <li>Upgrade roo-code to 3.35.4</li>
             <li>Fix: fix jcef timing issue at initialization</li>
         </ul>
         <h3>Version 3.34.6</h3>
@@ -187,31 +183,7 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
         <h3>Version 32.25.11</h3>
         <ul>
             <li>Upgrade roo-code vsix to v32.25.11</li>
-            <li>Refactor project with roo-code branding</li>
-        </ul>
-
-        <h3>Version 0.1.7</h3>
-        <ul>
-            <li>Updated Roo Code version to 3.25.15 with latest AI coding assistant features</li>
-            <li>Added support for no proxy configuration in restricted network environments</li>
-            <li>Added support for @terminal for improved user experience</li>
-        </ul>
-
-        <h3>Version 0.1.6</h3>
-        <ul>
-            <li>Added proxy support for extension host to enable usage in restricted network environments</li>
-            <li>Fixed ConcurrentModificationException in EditorAndDocManager for improved stability</li>
-            <li>Updated Roo Code version to 3.25.10 with latest AI coding assistant features</li>
-            <li>Fixed an intermittent issue where an extra "}" character would appear at the end of the file.</li>
-        </ul>
-
-        <h3>Version 0.1.5</h3>
-        <ul>
-            <li>Added system information display while webview is loading</li>
-            <li>Fixed issue where LocalResHandler attempted to load non-local resources</li>
-            <li>Enhanced logging for webview initialization process</li>
-            <li>Updated documentation and added known issues list</li>
-            <li>Improved README with star history and updated contributor information</li>
+            <li>Refactor project with Roo Code (CE) branding</li>
         </ul>
 
 
@@ -221,7 +193,7 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.plugins.terminal</depends>
-    <depends optional="true">com.intellij.java</depends>
+    <depends optional="true" config-file="roocode-java.xml">com.intellij.java</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->

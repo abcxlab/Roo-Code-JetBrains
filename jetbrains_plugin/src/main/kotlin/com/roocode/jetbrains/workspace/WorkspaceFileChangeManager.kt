@@ -41,37 +41,15 @@ class WorkspaceFileChangeManager(val project: Project) : Disposable {
     // Project connection
     private var projectConnection: MessageBusConnection? = null
 
-    // Project listener
-    private val projectListener = object : ProjectManagerListener {
-        override fun projectOpened(project: Project) {
-            registerFileListener(project)
-            // Record initial project workspace directory
-            project.basePath?.let { projectWorkspacePaths[project] = it }
-            // Trigger workspace root change event
-            triggerWorkspaceRootChangeEvent(project, null, project.basePath ?: "")
-        }
-
-        override fun projectClosed(project: Project) {
-            unregisterFileListener(project)
-            // Remove project workspace directory record
-            projectWorkspacePaths.remove(project)
-        }
-    }
-
     init {
         logger.debug("Initialize workspace file change manager")
 
-        // Listen for project open/close events
-        projectConnection = ApplicationManager.getApplication().messageBus.connect(this)
-        projectConnection?.subscribe(ProjectManager.TOPIC, projectListener)
-
-        // Register file listeners for already opened projects
-        val openProjects = ProjectManager.getInstance().openProjects
-        for (project in openProjects) {
-            registerFileListener(project)
-            // Record workspace directory for opened projects
-            project.basePath?.let { projectWorkspacePaths[project] = it }
-        }
+        // Register file listener for this project
+        registerFileListener(project)
+        // Record workspace directory for this project
+        project.basePath?.let { projectWorkspacePaths[project] = it }
+        // Trigger workspace root change event
+        triggerWorkspaceRootChangeEvent(project, null, project.basePath ?: "")
     }
 
     /**

@@ -211,11 +211,13 @@ class TerminalInstance(
      */
     private fun createCustomRunner(): LocalTerminalDirectRunner {
         return object : LocalTerminalDirectRunner(project) {
+            @Suppress("OVERRIDE_DEPRECATION")
             override fun createProcess(options: ShellStartupOptions): PtyProcess {
                 logger.debug("🔧 Custom createProcess method called...")
                 logger.debug("Startup options: $options")
 
-                val originalProcess = super.createProcess(options)
+                val runner = LocalTerminalDirectRunner.createTerminalRunner(project)
+                val originalProcess = runner.createProcess(options)
                 logger.debug("✅ Original Process created: ${originalProcess.javaClass.name} (Charset: $charset)")
 
                 return createProxyPtyProcess(originalProcess)
@@ -334,7 +336,7 @@ class TerminalInstance(
     /**
      * Show terminal
      */
-    fun show(preserveFocus: Boolean = false) {
+    fun show() {
         if (!state.canOperate()) {
             logger.warn("Terminal not initialized or disposed, cannot show: $extHostTerminalId")
             return
@@ -343,8 +345,7 @@ class TerminalInstance(
         ApplicationManager.getApplication().invokeLater {
             try {
                 showTerminalToolWindow()
-                shellWidget?.show(preserveFocus)
-                logger.debug("✅ Terminal shown: $extHostTerminalId")
+                // logger.debug("✅ Terminal shown: $extHostTerminalId")
             } catch (e: Exception) {
                 logger.error("❌ Failed to show terminal: $extHostTerminalId", e)
             }
@@ -363,7 +364,7 @@ class TerminalInstance(
         ApplicationManager.getApplication().invokeLater {
             try {
                 hideTerminalToolWindow()
-                shellWidget?.hide()
+                // shellWidget?.hide()
                 logger.debug("✅ Terminal hidden: $extHostTerminalId")
             } catch (e: Exception) {
                 logger.error("❌ Failed to hide terminal: $extHostTerminalId", e)

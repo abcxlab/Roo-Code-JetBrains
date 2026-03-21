@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="com.roocode.jetbrains.problems.java.JavaProblemSubscriber"/>
+    </extensions>
+</idea-plugin>

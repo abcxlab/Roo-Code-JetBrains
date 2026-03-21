@@ -44,20 +44,10 @@ class ProblemManager(private val project: Project) : Disposable {
                     }
                 }
         )
+    }
 
-        try {
-            // Use reflection or a separate handler class to avoid class loading issues
-            // when com.intellij.java plugin is not available (e.g. in PyCharm)
-            val handler = CompilerProblemHandler(project, this) { problems ->
-                publishProblems(problems)
-            }
-            handler.subscribe()
-            logger.debug("CompilerProblemHandler subscribed successfully.")
-        } catch (e: NoClassDefFoundError) {
-            logger.info("Compiler API not available, skipping compiler problem subscription. (This is expected in non-Java IDEs)")
-        } catch (e: Exception) {
-            logger.warn("Failed to subscribe to compiler problems", e)
-        }
+    fun receiveExternalProblems(problems: Map<URI, List<Problem>>) {
+        publishProblems(problems)
     }
 
     private fun publishEditorProblems() {
@@ -89,31 +79,17 @@ class ProblemManager(private val project: Project) : Disposable {
 
     private fun fetchEditorProblems(document: Document): List<Problem> {
         val problems = mutableListOf<Problem>()
-        val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document)
-        if (psiFile == null) {
-            logger.warn("Could not get PSI file for document, skipping problem analysis.")
-            return emptyList()
+
+        val markupModel = com.intellij.openapi.editor.impl.DocumentMarkupModel.forDocument(document, project, false)
+        val highlighters = markupModel.allHighlighters
+
+        for (highlighter in highlighters) {
+            val info = com.intellij.codeInsight.daemon.impl.HighlightInfo.fromRangeHighlighter(highlighter) ?: continue
+            if (info.severity == HighlightSeverity.ERROR) {
+                problems.add(convertHighlightInfoToProblem(info, document))
+            }
         }
 
-        val highlightInfos = mutableListOf<com.intellij.codeInsight.daemon.impl.HighlightInfo>()
-
-        DaemonCodeAnalyzerImpl.processHighlights(
-                document,
-                project,
-                HighlightSeverity.ERROR, // MODIFIED: Only fetch ERROR level problems
-                0,
-                document.textLength,
-                com.intellij.util.Processor { highlightInfo ->
-                    highlightInfos.add(highlightInfo)
-                    true
-                }
-        )
-
-        if (highlightInfos.isNotEmpty()) {
-            problems.addAll(
-                    highlightInfos.map { info -> convertHighlightInfoToProblem(info, document) }
-            )
-        }
         return problems
     }
 
@@ -140,7 +116,6 @@ class ProblemManager(private val project: Project) : Disposable {
         return when (severity) {
             HighlightSeverity.ERROR -> 8
             HighlightSeverity.WARNING, HighlightSeverity.WEAK_WARNING -> 4
-            HighlightSeverity.INFO -> 2
             else -> 1
         }
     }

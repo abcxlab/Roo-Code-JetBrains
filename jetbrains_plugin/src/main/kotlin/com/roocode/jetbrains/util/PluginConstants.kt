@@ -5,7 +5,7 @@
 package com.roocode.jetbrains.util
 
 object PluginConstants {
-    const val PLUGIN_ID = "RooCode"
+    const val PLUGIN_ID = "roo-code-ce"
     const val PLUGIN_CODE_DIR = "roo-code"
     const val NODE_MODULES_PATH = "node_modules"
     const val EXTENSION_ENTRY_FILE = "extension.js"

@@ -296,7 +296,7 @@ class MainThreadTerminalService(private val project: Project) : MainThreadTermin
             
             val terminalInstance = getTerminalInstance(id)
             if (terminalInstance != null) {
-                terminalInstance.show(preserveFocus ?: true)
+                terminalInstance.show()
                 logger.debug("✅ Terminal shown: $id")
             } else {
                 logger.warn("Terminal does not exist: $id")

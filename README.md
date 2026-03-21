@@ -6,12 +6,14 @@ English | [简体中文](README_zh.md)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![JetBrains](https://img.shields.io/badge/JetBrains-IntelliJ%20Platform-orange.svg)](https://www.jetbrains.com/)
 
+> **Roo Code for JetBrains (CE) is an independent community project and is not affiliated with, endorsed by, or sponsored by JetBrains or RooCode, Inc.**
+>
 > **Bring the power of Roo Code (Cline) to JetBrains IDEs. A community-driven effort to provide a stable, feature-rich experience where official support is missing.**
 
 Roo Code for JetBrains (CE) allows you to run the full [Roo Code](https://roocode.com) AI assistant within the JetBrains ecosystem. It solves the problem of Roo Code lacking an official, stable plugin for JetBrains IDEs by providing a deeply optimized environment to run the VSCode-based agent.
 
 ### 💡 Why this version?
-While an official branding fork exists, it inherits many unresolved issues from the original RunVSAgent project, making it difficult to use in daily production. This community edition (**abcxlab**) is dedicated to fixing those gaps:
+While an official branding fork exists, it inherits many unresolved issues from the original RunVSAgent project, making it difficult to use in daily production. This community edition (**ABCXLAB**) is dedicated to fixing those gaps:
 
 *   **Truly Usable**: Fixed critical JCEF timing bugs, editor concurrency deadlocks, and UI freezes that often plague the official version.
 *   **Feature Parity**: Integrated support for Checkpoints, Problem Selectors, and full Keymap/i18n—ensuring the JetBrains experience matches the VSCode original.
@@ -43,13 +45,6 @@ Roo Code for JetBrains (CE) currently supports the following JetBrains IDE serie
 - **Android Studio** - Android development
 
 > **Note**: Requires JetBrains IDE version 2023.1 or later for optimal compatibility.
-
-### XCode IDE
-Working on it...
-
-## 🤖 Supported Agents
-
-- **[Roo Code](https://roocode.com)**: Advanced AI-powered coding assistant with intelligent code generation and refactoring capabilities
 
 ## 🏗️ Architecture
 
@@ -89,24 +84,24 @@ graph TB
 
 ## 📦 Installation
 
-### [Download from JetBrains Marketplace](https://plugins.jetbrains.com/plugin/28068-runvsagent) (Recommended)
+### [Download from JetBrains Marketplace](https://plugins.jetbrains.com/plugin/30824-roo-code-ce) (Recommended)
 
 **Recommended Method**: We recommend downloading and installing the plugin from JetBrains Marketplace first, as this is the most convenient and secure installation method.
 
 1. **Online Installation**:
    - Open your JetBrains IDE (IntelliJ IDEA, WebStorm, PyCharm, etc.)
    - Go to `Settings/Preferences` → `Plugins`
-   - Search for "Roo Code for JetBrains" in the `Marketplace` tab
+   - Search for "Roo Code (CE)" in the `Marketplace` tab
    - Click the `Install` button
    - Restart your IDE when prompted
  
-2. **Verify Installation**: After restart, you should see the Roo Code for JetBrains plugin in your IDE's plugin list
+2. **Verify Installation**: After restart, you should see the Roo Code (CE) plugin in your IDE's plugin list
 
 ### Download from GitHub Releases
 
 You can download the pre-built plugin from our GitHub releases page:
 
-1. **Download Plugin**: Visit the [GitHub Releases](https://github.com/abcxlab/Roo-Code-JetBrains/releases) page and download the latest plugin file (`.zip` format)
+1. **Download Plugin**: Visit the [GitHub Releases](https://github.com/abcxlab/Roo-Code-JetBrains-CE/releases) page and download the latest plugin file (`.zip` format)
 
 2. **Install in JetBrains IDE**:
    - Open your JetBrains IDE (IntelliJ IDEA, WebStorm, PyCharm, etc.)
@@ -130,7 +125,7 @@ You can download the pre-built plugin from our GitHub releases page:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/abcxlab/Roo-Code-JetBrains.git
+git clone https://github.com/abcxlab/Roo-Code-JetBrains-CE.git
 cd Roo-Code-JetBrains
 
 # 2. Setup development environment
@@ -162,7 +157,7 @@ cd jetbrains_plugin
 ### Project Structure
 
 ```
-Roo-Code-JetBrains/
+Roo-Code-JetBrains-CE/
 ├── extension_host/          # Node.js Extension Host
 │   ├── src/                # TypeScript source code
 │   │   ├── main.ts         # Main entry point
@@ -225,12 +220,13 @@ This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) fo
 
 ### Maintainers
 
-- **Organization**: abcxlab Team
-- **Contact**: [GitHub Issues](https://github.com/abcxlab/Roo-Code-JetBrains/issues)
+- **Organization**: ABCXLAB Team
+- **Contact**: [GitHub Issues](https://github.com/abcxlab/Roo-Code-JetBrains-CE/issues)
 
 ---
 
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=abcxlab/Roo-Code-JetBrains&type=Date)](https://www.star-history.com/#abcxlab/Roo-Code-JetBrains&Date)
-**Made with ❤️ by abcxlab Team**
+
+**Made with ❤️ by ABCXLAB Team**

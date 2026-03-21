@@ -113,7 +113,7 @@ class ExtensionProcessManager : Disposable {
 
             // Build complete PATH
             envVars["PATH"] = buildEnhancedPath(envVars, nodePath)
-            logger.info("Enhanced PATH for ${SystemInfo.getOsNameAndVersion()}: ${envVars["PATH"]}")
+            logger.info("Enhanced PATH for ${SystemInfo.OS_NAME} ${SystemInfo.OS_VERSION}: ${envVars["PATH"]}")
 
             // Add key environment variables
             if (isUds) {
