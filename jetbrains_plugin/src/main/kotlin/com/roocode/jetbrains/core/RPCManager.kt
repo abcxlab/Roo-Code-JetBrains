@@ -32,7 +32,7 @@ class RPCManager(
     init {
         setupDefaultProtocols()
         setupExtensionRequiredProtocols()
-        setupWeCodeRequiredProtocols()
+        setupRooCodeRequiredProtocols()
         setupRooCodeFuncitonProtocols()
         setupWebviewProtocols()
     }
@@ -181,10 +181,10 @@ class RPCManager(
     }
 
     /**
-     * Set up protocol handlers required for WeCode plugin
+     * Set up protocol handlers required for RooCode plugin
      */
-    private fun setupWeCodeRequiredProtocols() {
-        logger.debug("Setting up required protocol handlers for WeCode")
+    private fun setupRooCodeRequiredProtocols() {
+        logger.debug("Setting up required protocol handlers for RooCode")
 
         // MainThreadTextEditors
         rpcProtocol.set(ServiceProxyRegistry.MainContext.MainThreadTextEditors, MainThreadTextEditors(project))

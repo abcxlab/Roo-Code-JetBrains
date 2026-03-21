@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# WeCoder PowerShell Shell Integration Diagnostic Script
+# RooCoder PowerShell Shell Integration Diagnostic Script
 # This script is used to diagnose shell integration issues
 
-Write-Host "WeCoder PowerShell Shell Integration Diagnostic Tool" -ForegroundColor Blue
+Write-Host "RooCoder PowerShell Shell Integration Diagnostic Tool" -ForegroundColor Blue
 Write-Host "================================================" -ForegroundColor Blue
 
 # Check PowerShell version
@@ -27,7 +27,7 @@ if ($psReadLineModule) {
 
 # Check environment variables
 Write-Host "Related Environment Variables:" -ForegroundColor Cyan
-$envVars = @('VSCODE_NONCE', 'VSCODE_INJECTION', 'VSCODE_SHELL_ENV_REPORTING', 'WECODER_SHELL_INTEGRATION', 'WECODER_SCRIPT_PATH')
+$envVars = @('VSCODE_NONCE', 'VSCODE_INJECTION', 'VSCODE_SHELL_ENV_REPORTING', 'ROOCODER_SHELL_INTEGRATION', 'ROOCODER_SCRIPT_PATH')
 foreach ($var in $envVars) {
     $value = [Environment]::GetEnvironmentVariable($var)
     if ($value) {

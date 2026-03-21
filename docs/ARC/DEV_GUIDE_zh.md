@@ -77,7 +77,7 @@
 为了确保一切都已正确设置，让我们来进行一个简单的代码修改，并观察其效果。
 
 1. **打开核心启动文件**
-    在 IntelliJ IDEA 中，找到并打开 `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/WecoderPlugin.kt`。
+    在 IntelliJ IDEA 中，找到并打开 `jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/RooCoderPlugin.kt`。
 
 2. **添加日志**
     找到 `runActivity` 方法，并在方法开头添加一行日志打印：

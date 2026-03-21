@@ -101,8 +101,8 @@ class ExtensionHostManager : Disposable {
                 ),
                 this::handleMessage
             )
-
-            logger.info("ExtensionHostManager started successfully")
+    
+            logger.debug("ExtensionHostManager started successfully")
         } catch (e: Exception) {
             logger.error("Failed to start ExtensionHostManager", e)
             dispose()
@@ -169,7 +169,7 @@ class ExtensionHostManager : Disposable {
      * Handle Ready message, send initialization data.
      */
     private fun handleReadyMessage() {
-        logger.info("Received Ready message from extension host")
+        logger.debug("Received Ready message from extension host")
 
         try {
              // Build initialization data
@@ -179,7 +179,7 @@ class ExtensionHostManager : Disposable {
             val jsonData = gson.toJson(initData).toByteArray()
 
             protocol?.send(jsonData)
-            logger.info("Sent initialization data to extension host")
+            logger.debug("Sent initialization data to extension host")
         } catch (e: Exception) {
             logger.error("Failed to handle Ready message", e)
         }
@@ -189,7 +189,7 @@ class ExtensionHostManager : Disposable {
      * Handle Initialized message, create RPC manager and activate plugin.
      */
     private fun handleInitializedMessage() {
-        logger.info("Received Initialized message from extension host")
+        logger.debug("Received Initialized message from extension host")
 
         try {
             // Get protocol
@@ -213,11 +213,11 @@ class ExtensionHostManager : Disposable {
                     if (error != null) {
                         logger.error("Failed to activate RooCode plugin", error)
                     } else {
-                        logger.info("RooCode plugin activated successfully")
+                        logger.debug("RooCode plugin activated successfully")
                     }
                 }
 
-            logger.info("Initialized extension host")
+            logger.debug("Initialized extension host")
 
             // Subscribe to problem updates after RPC is ready
             subscribeToProblemUpdates()
@@ -238,7 +238,7 @@ class ExtensionHostManager : Disposable {
                 pushProblemsToExtHost(problems)
             }
         })
-        logger.info("Subscribed to problem updates topic.")
+        logger.debug("Subscribed to problem updates topic.")
     }
 
     private fun pushProblemsToExtHost(problems: Map<URI, List<Problem>>) {
@@ -354,7 +354,7 @@ class ExtensionHostManager : Disposable {
             "DS" -> "DataSpell"
             else -> if (fullName?.contains("Android Studio") == true) "Android Studio" else "JetBrains"
         }
-        logger.info("Get IDE name, productCode: $productCode ideName: $ideName fullName: $fullName")
+        logger.debug("Get IDE name, productCode: $productCode ideName: $ideName fullName: $fullName")
         return ideName
     }
 
@@ -382,7 +382,7 @@ class ExtensionHostManager : Disposable {
                 else -> "idea" // Fallback to idea
             }.also { scheme ->
                 // DEBUG: RooCode Cloud Integration
-                Logger.getInstance(ExtensionHostManager::class.java).info("Detected IDE protocol scheme: $scheme")
+                Logger.getInstance(ExtensionHostManager::class.java).debug("Detected IDE protocol scheme: $scheme")
             }
         }
     }
@@ -393,12 +393,12 @@ class ExtensionHostManager : Disposable {
     private fun getIDEVersion(): String {
         val applicationInfo = ApplicationInfo.getInstance()
         val version = applicationInfo.shortVersion ?: "1.0.0"
-        logger.info("Get IDE version: $version")
+        logger.debug("Get IDE version: $version")
 
         val pluginVersion = PluginManagerCore.getPlugin(PluginId.getId(PluginConstants.PLUGIN_ID))?.version
         if (pluginVersion != null) {
             val fullVersion = "$version, $pluginVersion"
-            logger.info("Get IDE version and plugin version: $fullVersion")
+            logger.debug("Get IDE version and plugin version: $fullVersion")
             return fullVersion
         }
 

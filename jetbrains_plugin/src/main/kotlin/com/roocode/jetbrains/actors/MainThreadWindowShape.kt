@@ -8,15 +8,8 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.WindowManager
-import com.roocode.jetbrains.plugin.WecoderPluginService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.future.future
 import java.awt.Desktop
 import java.net.URI
-import java.util.concurrent.CompletableFuture
 
 /**
  * Main thread window service interface

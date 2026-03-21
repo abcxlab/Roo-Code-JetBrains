@@ -23,8 +23,8 @@ import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.ide.BrowserUtil
 import com.intellij.util.ui.UIUtil
 import com.roocode.jetbrains.actions.OpenDevToolsAction
-import com.roocode.jetbrains.plugin.WecoderPlugin
-import com.roocode.jetbrains.plugin.WecoderPluginService
+import com.roocode.jetbrains.plugin.RooCoderPlugin
+import com.roocode.jetbrains.plugin.RooCoderPluginService
 import com.roocode.jetbrains.plugin.DEBUG_MODE
 import com.roocode.jetbrains.webview.DragDropHandler
 import com.roocode.jetbrains.webview.WebViewCreationCallback
@@ -33,7 +33,6 @@ import com.roocode.jetbrains.webview.WebViewManager
 import com.roocode.jetbrains.util.PluginConstants
 import com.roocode.jetbrains.util.RooCodeBundle
 import java.awt.BorderLayout
-import java.awt.Color
 import java.awt.datatransfer.StringSelection
 import java.awt.Toolkit
 import java.awt.Dimension
@@ -56,17 +55,17 @@ class RooToolWindowFactory : ToolWindowFactory, DumbAware {
         toolWindow.component.background = UIUtil.getPanelBackground()
 
         // Initialize plugin service
-        val pluginService = WecoderPlugin.getInstance(project)
+        val pluginService = RooCoderPlugin.getInstance(project)
         pluginService.initialize(project)
 
         // toolbar
         val titleActions = mutableListOf<AnAction>()
-        val action = ActionManager.getInstance().getAction("WecoderToolbarGroup")
+        val action = ActionManager.getInstance().getAction("RooCoderToolbarGroup")
         if (action != null) {
             titleActions.add(action)
         }
         // Add developer tools button only in debug mode
-        if ( WecoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
+        if ( RooCoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
             titleActions.add(OpenDevToolsAction { project.getService(WebViewManager::class.java).getLatestWebView() })
         }
 

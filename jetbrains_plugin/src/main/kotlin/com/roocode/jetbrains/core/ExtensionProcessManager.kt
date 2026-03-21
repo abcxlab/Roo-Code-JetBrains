@@ -9,7 +9,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.SystemInfo
 import com.roocode.jetbrains.plugin.DEBUG_MODE
-import com.roocode.jetbrains.plugin.WecoderPluginService
+import com.roocode.jetbrains.plugin.RooCoderPluginService
 import com.roocode.jetbrains.util.PluginResourceUtil
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -336,8 +336,8 @@ class ExtensionProcessManager : Disposable {
      */
     fun findExtensionEntryFile(): String? {
         // In debug mode, directly return debug-resources path
-        if (WecoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
-            val debugEntry = java.nio.file.Paths.get(WecoderPluginService.getDebugResource(), RUNTIME_DIR, "src", EXTENSION_ENTRY_FILE).normalize().toFile()
+        if (RooCoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
+            val debugEntry = java.nio.file.Paths.get(RooCoderPluginService.getDebugResource(), RUNTIME_DIR, "src", EXTENSION_ENTRY_FILE).normalize().toFile()
             if (debugEntry.exists() && debugEntry.isFile) {
                 logger.info("[DebugMode] Using debug entry file: ${debugEntry.absolutePath}")
                 return debugEntry.absolutePath

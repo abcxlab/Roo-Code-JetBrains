@@ -9,8 +9,7 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
 import com.roocode.jetbrains.plugin.DEBUG_MODE
-import com.roocode.jetbrains.plugin.WecoderPlugin
-import com.roocode.jetbrains.plugin.WecoderPluginService
+import com.roocode.jetbrains.plugin.RooCoderPluginService
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -32,9 +31,9 @@ object PluginResourceUtil {
      */
     fun getResourcePath(pluginId: String, resourceName: String): String? {
         return try {
-            if(WecoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
+            if(RooCoderPluginService.getDebugMode() != DEBUG_MODE.NONE) {
                 // Debug mode: directly use plugin service to get resource path
-                return WecoderPluginService.getDebugResource() + "/$resourceName"
+                return RooCoderPluginService.getDebugResource() + "/$resourceName"
             }
             val plugin = PluginManagerCore.getPlugin(PluginId.getId(pluginId))
                 ?: throw IllegalStateException("Cannot find plugin: $pluginId")

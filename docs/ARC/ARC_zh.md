@@ -206,8 +206,8 @@ graph TD
 
 #### 4.1.2 内部结构
 
-- **启动与管理 (`WecoderPluginService`, `ExtensionProcessManager`)**:
-    - `plugin.xml` 中注册的 `WecoderPluginService` 是插件的初始化入口。
+- **启动与管理 (`RooCoderPluginService`, `ExtensionProcessManager`)**:
+    - `plugin.xml` 中注册的 `RooCoderPluginService` 是插件的初始化入口。
     - 在其 `initialize` 方法中，它会创建一个 `ExtensionProcessManager` 实例，并调用其 `start()` 方法。
     - `ExtensionProcessManager` 负责构建 `node` 命令行，启动 `extension_host` 子进程，并管理其生命周期。
 - **RPC 双向角色**:

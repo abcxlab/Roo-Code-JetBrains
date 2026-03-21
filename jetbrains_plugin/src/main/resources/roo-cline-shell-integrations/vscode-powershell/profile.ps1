@@ -4,15 +4,15 @@
 # ---------------------------------------------------------------------------------------------
 
 # Add debug output
-if ($env:WECODER_SHELL_INTEGRATION -eq "1") {
-	Write-Host "🚀 WeCoder PowerShell Shell Integration Loading..." -ForegroundColor Green
-	Write-Host "📁 Script Path: $($env:WECODER_SCRIPT_PATH)" -ForegroundColor Yellow
+if ($env:ROOCODER_SHELL_INTEGRATION -eq "1") {
+	Write-Host "🚀 RooCoder PowerShell Shell Integration Loading..." -ForegroundColor Green
+	Write-Host "📁 Script Path: $($env:ROOCODER_SCRIPT_PATH)" -ForegroundColor Yellow
 	Write-Host "🔑 Nonce: $($env:VSCODE_NONCE)" -ForegroundColor Yellow
 }
 
 # Prevent installing more than once per session
 if (Test-Path variable:global:__VSCodeOriginalPrompt) {
-	if ($env:WECODER_SHELL_INTEGRATION -eq "1") {
+	if ($env:ROOCODER_SHELL_INTEGRATION -eq "1") {
 		Write-Host "⚠️ Shell integration already loaded, skipping..." -ForegroundColor Yellow
 	}
 	return;
@@ -20,10 +20,10 @@ if (Test-Path variable:global:__VSCodeOriginalPrompt) {
 
 # Disable shell integration when the language mode is restricted
 if ($ExecutionContext.SessionState.LanguageMode -ne "FullLanguage") {
-	if ($env:WECODER_SHELL_INTEGRATION -eq "1") {
+	if ($env:ROOCODER_SHELL_INTEGRATION -eq "1") {
 		Write-Host "❌ Shell integration disabled due to restricted language mode" -ForegroundColor Red
 		# Automatically run diagnostic script
-		$diagnosePath = Join-Path (Split-Path $env:WECODER_SCRIPT_PATH -Parent) "diagnose.ps1"
+		$diagnosePath = Join-Path (Split-Path $env:ROOCODER_SCRIPT_PATH -Parent) "diagnose.ps1"
 		if (Test-Path $diagnosePath) {
 			Write-Host "🔍 Running diagnostic script..." -ForegroundColor Yellow
 			& $diagnosePath
@@ -151,40 +151,40 @@ if (Get-Module -Name PSReadLine) {
 }
 
 # Add confirmation message for successful loading
-if ($env:WECODER_SHELL_INTEGRATION -eq "1") {
+if ($env:ROOCODER_SHELL_INTEGRATION -eq "1") {
 	# Check if shell integration is correctly initialized
 	$shellIntegrationOk = $true
-	
+
 	# Check if required variables exist
 	if (-not $Nonce) {
 		Write-Host "⚠️ Warning: VSCODE_NONCE is not set correctly" -ForegroundColor Yellow
 		$shellIntegrationOk = $false
 	}
-	
+
 	# Check if Prompt function is correctly defined
 	if (-not (Test-Path function:Global:Prompt)) {
 		Write-Host "⚠️ Warning: Global:Prompt function is not correctly defined" -ForegroundColor Yellow
 		$shellIntegrationOk = $false
 	}
-	
+
 	# Check PSReadLine
 	if (-not (Get-Module -Name PSReadLine)) {
 		Write-Host "⚠️ Warning: PSReadLine module is not loaded, some features may be unavailable" -ForegroundColor Yellow
 	}
-	
+
 	if ($shellIntegrationOk) {
-		Write-Host "✅ WeCoder PowerShell Shell Integration loaded successfully!" -ForegroundColor Green
+		Write-Host "✅ RooCoder PowerShell Shell Integration loaded successfully!" -ForegroundColor Green
 	} else {
-		Write-Host "❌ WeCoder PowerShell Shell Integration encountered issues during loading" -ForegroundColor Red
+		Write-Host "❌ RooCoder PowerShell Shell Integration encountered issues during loading" -ForegroundColor Red
 		# Automatically run diagnostic script
-		$diagnosePath = Join-Path (Split-Path $env:WECODER_SCRIPT_PATH -Parent) "diagnose.ps1"
+		$diagnosePath = Join-Path (Split-Path $env:ROOCODER_SCRIPT_PATH -Parent) "diagnose.ps1"
 		if (Test-Path $diagnosePath) {
 			Write-Host "🔍 Automatically running diagnostic script..." -ForegroundColor Yellow
 			& $diagnosePath
 		}
 	}
-	
+
 	# Clean up debug environment variables
-	$env:WECODER_SHELL_INTEGRATION = $null
-	$env:WECODER_SCRIPT_PATH = $null
+	$env:ROOCODER_SHELL_INTEGRATION = $null
+	$env:ROOCODER_SCRIPT_PATH = $null
 } 

@@ -14,10 +14,10 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>Roo Code</name>
+    <name>Roo Code for JetBrains</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://roocode.com/">RooCode Inc</vendor>
+    <vendor url="https://abcxlab.com/">ABC XLAB/vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]>
@@ -25,8 +25,8 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
          Guidelines:
     https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <h1>RooCode - Run VSCode-based Coding Agents in JetBrains IDEs</h1>
-        <p>RooCode is an innovative cross-platform development tool that enables developers to run VSCode-based coding agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.) or other IDE platforms.</p>
+        <h1>RooCode for JetBrains - Run VSCode-based Coding Agents in JetBrains IDEs</h1>
+        <p>RooCode for JetBrains is an innovative cross-platform development tool that enables developers to run roocode agents and extensions within JetBrains IDEs (IntelliJ IDEA, WebStorm, PyCharm, etc.) or other IDE platforms.</p>
 
         <h2>Core Features</h2>
         <ul>
@@ -50,11 +50,6 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
             <li><strong>Android Studio</strong> - Android development</li>
         </ul>
 
-        <h2>Supported Agents</h2>
-        <ul>
-            <li><strong>Roo Code</strong>: Advanced AI-powered coding assistant with intelligent code generation and refactoring capabilities</li>
-        </ul>
-
         <h2>Requirements</h2>
         <ul>
             <li>Requires <a href="https://nodejs.org/">Node.js</a> v18+ installed</li>
@@ -72,7 +67,11 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 
     <!-- Change notes for the plugin -->
     <change-notes><![CDATA[
-        <h3>Version v3.51.1</h3>
+        <h3>Version 3.51.1.1</h3>
+        <ul>
+            <li>Feat: rename internal components from Wecoder to RooCode to avoid conflicts with other coders</li>
+        </ul>
+        <h3>Version 3.51.1.0</h3>
         <ul>
             <li>Upgrade roo-code to v3.51.1</li>
         </ul>
@@ -227,7 +226,7 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.roocode.jetbrains.plugin.WecoderPlugin" />
+        <postStartupActivity implementation="com.roocode.jetbrains.plugin.RooCoderPlugin" />
         <editorFactoryListener implementation="com.roocode.jetbrains.editor.EditorListener" />
         <toolWindow factoryClass="com.roocode.jetbrains.ui.RooToolWindowFactory"
             id="RooCode"
@@ -241,7 +240,7 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.terminal">
         <localTerminalCustomizer
-            implementation="com.roocode.jetbrains.terminal.WeCoderTerminalCustomizer" />
+            implementation="com.roocode.jetbrains.terminal.RooCoderTerminalCustomizer" />
     </extensions>
 
     <actions>
@@ -301,7 +300,7 @@ https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
             <override-text place="GoToAction" text="Setting" />
         </action>
 
-        <group id="WecoderToolbarGroup">
+        <group id="RooCoderToolbarGroup">
             <reference ref="RooCode.plusButtonClicked" />
             <!-- <reference ref="RooCode.promptsButtonClicked" /> -->
             <!-- <reference ref="RooCode.mcpButtonClicked" />-->

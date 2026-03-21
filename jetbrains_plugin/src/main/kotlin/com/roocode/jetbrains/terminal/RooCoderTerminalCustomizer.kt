@@ -12,9 +12,9 @@ import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 
-class WeCoderTerminalCustomizer : LocalTerminalCustomizer() {
+class RooCoderTerminalCustomizer : LocalTerminalCustomizer() {
   
-  private val logger = Logger.getInstance(WeCoderTerminalCustomizer::class.java)
+  private val logger = Logger.getInstance(RooCoderTerminalCustomizer::class.java)
   
   // Mark file copy status
   private val filesCopied = AtomicBoolean(false)
@@ -101,7 +101,7 @@ class WeCoderTerminalCustomizer : LocalTerminalCustomizer() {
   ): Array<String> {
     
     // Print debug logs
-    logger.debug("🔧 WeCodeTerminalCustomizer - customize terminal command and environment")
+    logger.debug("🔧 RooCoderTerminalCustomizer - customize terminal command and environment")
     logger.debug("📂 Working directory: $workingDirectory")
     logger.debug("🔨 Command: ${command.joinToString(" ")}")
     logger.debug("🌍 Environment variables: ${envs.entries.joinToString("\n")}")
@@ -190,8 +190,8 @@ class WeCoderTerminalCustomizer : LocalTerminalCustomizer() {
     logger.debug("🔧 Inject PowerShell script: $scriptPath")
     
     // Add debug info environment variables
-    //envs["WECODER_SHELL_INTEGRATION"] = "1"
-    //envs["WECODER_SCRIPT_PATH"] = scriptPath
+    //envs["ROOCODER_SHELL_INTEGRATION"] = "1"
+    //envs["ROOCODER_SCRIPT_PATH"] = scriptPath
 
     // Set environment variables required for PowerShell shell integration
     envs["VSCODE_NONCE"] = generateNonce()

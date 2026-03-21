@@ -35,7 +35,7 @@ class ExtensionManager : Disposable {
      * @return Extension description object
      */
     private fun parseExtensionDescription(extensionPath: String): ExtensionDescription {
-        logger.info("Parsing extension: $extensionPath")
+        logger.debug("Parsing extension: $extensionPath")
 
         // Read package.json file
         val packageJsonPath = Paths.get(extensionPath, "package.json").toString()
@@ -99,7 +99,7 @@ class ExtensionManager : Disposable {
         val extensionDescription = parseExtensionDescription(extensionPath)
         // Use full identifier value as key for lookup during activation
         extensions[extensionDescription.identifier.value] = extensionDescription
-        logger.info("Extension registered: ${extensionDescription.identifier.value}")
+        logger.debug("Extension registered: ${extensionDescription.identifier.value}")
         return extensionDescription
     }
 
@@ -110,7 +110,7 @@ class ExtensionManager : Disposable {
      * @return Completion Future
      */
     fun activateExtension(extensionId: String, rpcProtocol: IRPCProtocol): CompletableFuture<Boolean> {
-        logger.info("Activating extension: $extensionId")
+        logger.debug("Activating extension: $extensionId")
 
         try {
             // Get extension description
@@ -141,7 +141,7 @@ class ExtensionManager : Disposable {
                         is Boolean -> result
                         else -> false
                     }
-                    logger.info("Extension activation ${if (boolResult) "successful" else "failed"}: $extensionId")
+                    logger.debug("Extension activation ${if (boolResult) "successful" else "failed"}: $extensionId")
                     boolResult
                 }.exceptionally { throwable ->
                     logger.error("Failed to activate extension: $extensionId", throwable)

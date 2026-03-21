@@ -19,7 +19,7 @@
 ```mermaid
 graph TD
     subgraph JetBrains Plugin
-        A[WecoderPluginService] -- "start(portOrPath)" --> B[ExtensionProcessManager];
+        A[RooCoderPluginService] -- "start(portOrPath)" --> B[ExtensionProcessManager];
         A -- "start()" --> C[ISocketServer];
         
         C -- "accepts connection" --> D_inst[Creates ExtensionHostManager Instance];
@@ -45,8 +45,8 @@ graph TD
 sequenceDiagram
     participant User
     participant IntelliJ as JetBrains IDE
-    participant WecoderPlugin as StartupActivity
-    participant WecoderPluginService as Service
+    participant RooCoderPlugin as StartupActivity
+    participant RooCoderPluginService as Service
     participant ExtProcessManager as ExtensionProcessManager
     participant ISocketServer as ISocketServer (TCP/UDS)
     participant ExtHostProcess as extension_host (Node.js)
@@ -54,11 +54,11 @@ sequenceDiagram
     participant RPCManager
 
     User->>IntelliJ: Opens Project
-    IntelliJ->>+WecoderPlugin: runActivity()
-    WecoderPlugin->>+WecoderPluginService: getService() & initialize()
-    WecoderPluginService->>+ISocketServer: start()
-    ISocketServer-->>-WecoderPluginService: return portOrPath
-    WecoderPluginService->>+ExtProcessManager: start(portOrPath)
+    IntelliJ->>+RooCoderPlugin: runActivity()
+    RooCoderPlugin->>+RooCoderPluginService: getService() & initialize()
+    RooCoderPluginService->>+ISocketServer: start()
+    ISocketServer-->>-RooCoderPluginService: return portOrPath
+    RooCoderPluginService->>+ExtProcessManager: start(portOrPath)
     ExtProcessManager->>+ExtHostProcess: Launches process with port/path as arg
     ExtHostProcess->>+ISocketServer: Connects to port/path
     ISocketServer->>+ExtHostManager: Creates instance for connection
@@ -78,19 +78,19 @@ sequenceDiagram
 
 #### 2.1 阶段一：插件预热 (Plugin Warm-up)
 *   **触发点**: 用户打开一个项目 (`Project`)。
-*   **核心类**: [`WecoderPlugin`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/WecoderPlugin.kt) (`StartupActivity`)
+*   **核心类**: [`RooCoderPlugin`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/RooCoderPlugin.kt) (`StartupActivity`)
 *   **关键动作**:
     1.  `runActivity` 被调用。
-    2.  通过 `project.getService()` 获取 [`WecoderPluginService`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/WecoderPlugin.kt) 实例。
-    3.  调用 `WecoderPluginService.initialize()`，正式开始初始化流程。
+    2.  通过 `project.getService()` 获取 [`RooCoderPluginService`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/RooCoderPlugin.kt) 实例。
+    3.  调用 `RooCoderPluginService.initialize()`，正式开始初始化流程。
 
 #### 2.2 阶段二：建立通信信道 (Establishing the Channel)
-*   **核心类**: [`WecoderPluginService`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/WecoderPlugin.kt), `ISocketServer`, [`ExtensionProcessManager`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/core/ExtensionProcessManager.kt)
+*   **核心类**: [`RooCoderPluginService`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/plugin/RooCoderPlugin.kt), `ISocketServer`, [`ExtensionProcessManager`](../../jetbrains_plugin/src/main/kotlin/com/roocode/jetbrains/core/ExtensionProcessManager.kt)
 *   **关键动作**:
-    1.  `WecoderPluginService` 根据操作系统选择 `ISocketServer` 的实现：Windows 使用 TCP (`ExtensionSocketServer`)，macOS/Linux 使用 UDS (`ExtensionUnixDomainSocketServer`)。
+    1.  `RooCoderPluginService` 根据操作系统选择 `ISocketServer` 的实现：Windows 使用 TCP (`ExtensionSocketServer`)，macOS/Linux 使用 UDS (`ExtensionUnixDomainSocketServer`)。
     2.  服务端启动并监听一个唯一的端口或 UDS 文件路径。
-    3.  `WecoderPluginService` 获取到此 `portOrPath`。
-    4.  `WecoderPluginService` 调用 `ExtensionProcessManager.start(portOrPath)`。
+    3.  `RooCoderPluginService` 获取到此 `portOrPath`。
+    4.  `RooCoderPluginService` 调用 `ExtensionProcessManager.start(portOrPath)`。
     5.  `ExtensionProcessManager` 启动 `extension_host` Node.js 进程，并将连接参数传递给它。
     6.  `extension_host` 进程启动后，发起连接。
 
@@ -116,7 +116,7 @@ sequenceDiagram
 
 ## 3. 核心组件职责详解 (Component Deep Dive)
 
-*   **`WecoderPluginService`**: 项目级总控制器，负责统筹启动和销毁流程。
+*   **`RooCoderPluginService`**: 项目级总控制器，负责统筹启动和销毁流程。
 *   **`ExtensionProcessManager`**: 外部进程的“保姆”，只负责 `extension_host` 的启停和监控。
 *   **`ISocketServer`**: 网络连接的“监听者”接口，负责接受连接并分发给会话处理器。
 *   **`ExtensionHostManager`**: 连接会话的“处理器”，负责与单个 `extension_host` 实例的完整握手和生命周期管理。
@@ -195,7 +195,7 @@ sequenceDiagram
 ## 5. 多项目场景 (Multi-Project Scenario)
 
 *   **隔离模型**: 插件遵循 IntelliJ 的项目级服务模型。
-*   **资源实例化**: 当打开多个项目时，`WecoderPluginService` 等都会为每个项目**创建一套独立的实例**。
+*   **资源实例化**: 当打开多个项目时，`RooCoderPluginService` 等都会为每个项目**创建一套独立的实例**。
 *   **交互图**: 每个项目都拥有自己独立的 `extension_host` 进程和通信信道，互不干扰。
 
 ---

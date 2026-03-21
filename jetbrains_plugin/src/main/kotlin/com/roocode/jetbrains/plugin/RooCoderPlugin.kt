@@ -36,16 +36,16 @@ import java.io.File
  * WeCode IDEA plugin entry class
  * Responsible for plugin initialization and lifecycle management
  */
-class WecoderPlugin : StartupActivity.DumbAware {
-    private val logger = Logger.getInstance(WecoderPlugin::class.java)
+class RooCoderPlugin : StartupActivity.DumbAware {
+    private val logger = Logger.getInstance(RooCoderPlugin::class.java)
 
     companion object {
         /**
          * Get plugin service instance
          */
-        fun getInstance(project: Project): WecoderPluginService {
-            return project.getService(WecoderPluginService::class.java)
-                ?: error("WecoderPluginService not found")
+        fun getInstance(project: Project): RooCoderPluginService {
+            return project.getService(RooCoderPluginService::class.java)
+                ?: error("RooCoderPluginService not found")
         }
 
         /**
@@ -75,7 +75,7 @@ class WecoderPlugin : StartupActivity.DumbAware {
 
         try {
             // Eagerly initialize key services by getting them.
-            val pluginService = project.getService(WecoderPluginService::class.java)
+            val pluginService = project.getService(RooCoderPluginService::class.java)
             project.getService(WebViewManager::class.java)
 
             // Now, explicitly initialize the main service.
@@ -117,8 +117,8 @@ enum class DEBUG_MODE {
  * Plugin service class, provides global access point and core functionality
  */
 @Service(Service.Level.PROJECT)
-class WecoderPluginService(private var currentProject: Project) : Disposable {
-    private val logger = Logger.getInstance(WecoderPluginService::class.java)
+class RooCoderPluginService(private var currentProject: Project) : Disposable {
+    private val logger = Logger.getInstance(RooCoderPluginService::class.java)
 
     // Initialization started flag to prevent race conditions
     private val initializationStarted = AtomicBoolean(false)
@@ -149,11 +149,11 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
         init {
             val properties = Properties()
             try {
-                WecoderPluginService::class.java.getResourceAsStream("/com/roocode/jetbrains/plugin/config/plugin.properties")?.use { configStream ->
+                RooCoderPluginService::class.java.getResourceAsStream("/com/roocode/jetbrains/plugin/config/plugin.properties")?.use { configStream ->
                     properties.load(configStream)
                 }
             } catch (e: Exception) {
-                Logger.getInstance(WecoderPluginService::class.java).warn("Error reading config file for debug mode", e)
+                Logger.getInstance(RooCoderPluginService::class.java).warn("Error reading config file for debug mode", e)
             }
             val debugModeStr = properties.getProperty("debug.mode", "none").lowercase()
             DEBUG_TYPE = DEBUG_MODE.fromString(debugModeStr)
@@ -187,7 +187,7 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
         
         // Use CAS to ensure only one thread enters the initialization block
         if (!initializationStarted.compareAndSet(false, true)) {
-            logger.info("WecoderPluginService initialization already started or completed")
+            logger.info("RooCoderPluginService initialization already started or completed")
             return
         }
 
@@ -198,7 +198,7 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
             initializationComplete = CompletableFuture<Boolean>()
         }
 
-        logger.info("Initializing WecoderPluginService, debug mode: $DEBUG_TYPE")
+        logger.info("Initializing RooCoderPluginService, debug mode: $DEBUG_TYPE")
         this.currentProject = project
         socketServer.project = project
         udsSocketServer.project = project
@@ -226,7 +226,7 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
 
                     // Initialization successful
                     initializationComplete.complete(true)
-                    logger.info("Debug mode connection successful, WecoderPluginService initialized")
+                    logger.info("Debug mode connection successful, RooCoderPluginService initialized")
                 } else {
                     // Normal mode: start Socket server and extension process
                     // 1. Start Socket server according to system, use UDS except on Windows
@@ -250,10 +250,10 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
                     }
                     // Initialization successful
                     initializationComplete.complete(true)
-                    logger.info("WecoderPluginService initialization completed")
+                    logger.info("RooCoderPluginService initialization completed")
                 }
             } catch (e: Exception) {
-                logger.error("Error during WecoderPluginService initialization", e)
+                logger.error("Error during RooCoderPluginService initialization", e)
                 cleanup()
                 initializationComplete.complete(false)
             }
@@ -371,7 +371,7 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
             return
         }
 
-        logger.info("Disposing WecoderPluginService")
+        logger.info("Disposing RooCoderPluginService")
 
         // The WebViewManager is a project service and will be disposed by the platform.
         // Manually disposing it can lead to issues.
@@ -382,6 +382,6 @@ class WecoderPluginService(private var currentProject: Project) : Disposable {
         // Clean up resources
         cleanup()
 
-        logger.info("WecoderPluginService disposed")
+        logger.info("RooCoderPluginService disposed")
     }
 }
